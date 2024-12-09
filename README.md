@@ -4,6 +4,13 @@
   <img alt="preview" src="./assets/preview.webp">
 </p>
 
+# supported services
+
+- Spotify
+- Plex/Plexamp
+- SoundCloud
+- Last.fm
+
 # setup
 
 - Create an application at https://discord.com/developers/ (the name will be the text displayed in Listening to ...)
