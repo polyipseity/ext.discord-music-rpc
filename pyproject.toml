@@ -1,0 +1,22 @@
+[project]
+name = "discord-music-rpc"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pypresence>=4.3.0",
+    "python-dotenv>=1.0.1",
+    "requests>=2.32.3",
+    "spotipy>=2.24.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv.sources]
+pypresence = { url = "https://github.com/qwertyquerty/pypresence/archive/master.zip" }
+
+[project.scripts]
+discord-music-rpc = "discord_music_rpc.main:main"
