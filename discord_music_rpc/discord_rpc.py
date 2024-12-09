@@ -3,6 +3,7 @@ from pypresence import Presence, ActivityType
 from .sources import Track
 from .config import Config
 from .utils import is_same_track
+from . import logger
 
 
 class DiscordRichPresence:
@@ -14,7 +15,7 @@ class DiscordRichPresence:
 
     def connect(self):
         self.rpc.connect()
-        print("Connected to Discord RPC")
+        logger.info("Connected to Discord RPC")
 
     def update(self, track: Track | None):
         if not track:
@@ -70,4 +71,4 @@ class DiscordRichPresence:
             self.clear()
             self.rpc.close()
         except Exception as e:
-            print(e)
+            logger.error(e)

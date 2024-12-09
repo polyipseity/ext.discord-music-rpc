@@ -2,6 +2,8 @@ import os
 from dataclasses import dataclass
 from dotenv import load_dotenv
 
+from . import logger
+
 # Load environment variables
 load_dotenv()
 
@@ -33,35 +35,35 @@ class Config:
     def validate(cls) -> list[str]:
         # Spotify configuration checks
         if not cls.SPOTIFY_CLIENT_ID:
-            print(
+            logger.info(
                 "Note: SPOTIFY_CLIENT_ID not configured. Spotify support will be disabled."
             )
         if not cls.SPOTIFY_CLIENT_SECRET:
-            print(
+            logger.info(
                 "Note: SPOTIFY_CLIENT_SECRET not configured. Spotify support will be disabled."
             )
 
         # Last.fm configuration checks
         if not cls.LASTFM_USERNAME:
-            print(
+            logger.info(
                 "Note: LASTFM_USERNAME not configured. Spotify support will be disabled."
             )
         if not cls.LASTFM_API_KEY:
-            print(
+            logger.info(
                 "Note: LASTFM_API_KEY not configured. Spotify support will be disabled."
             )
 
         if not cls.SOUNDCLOUD_AUTH_TOKEN:
-            print(
+            logger.info(
                 "Note: SOUNDCLOUD_AUTH_TOKEN not configured. SoundCloud support will be disabled."
             )
 
         if not cls.PLEX_SERVER_URL:
-            print(
+            logger.info(
                 "Note: PLEX_SERVER_URL not configured. SoundCloud support will be disabled."
             )
         if not cls.PLEX_TOKEN:
-            print(
+            logger.info(
                 "Note: PLEX_TOKEN not configured. SoundCloud support will be disabled."
             )
 

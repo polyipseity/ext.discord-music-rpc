@@ -2,6 +2,7 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from . import Track
 from ..config import Config
+from .. import logger
 
 
 class SpotifySource:
@@ -11,7 +12,7 @@ class SpotifySource:
             or not config.SPOTIFY_CLIENT_SECRET
             or not config.SPOTIFY_REDIRECT_URI
         ):
-            print("Spotify credentials not configured.")
+            logger.debug("Spotify credentials not configured.")
             self.client = None
             return
 
@@ -26,7 +27,7 @@ class SpotifySource:
 
     def get_current_track(self) -> Track | None:
         if not self.client:
-            print("Spotify credentials not configured.")
+            logger.debug("Spotify credentials not configured.")
             return
 
         try:
@@ -52,5 +53,5 @@ class SpotifySource:
                 source="spotify",
             )
         except Exception as e:
-            print(f"Error fetching Spotify track: {e}")
+            logger.error(f"Error fetching Spotify track: {e}")
             return None

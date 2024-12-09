@@ -4,12 +4,13 @@ from plexapi.server import PlexServer
 from plexapi.audio import Audio, Track as PlexTrack, Album, Artist
 from . import Track
 from ..config import Config
+from .. import logger
 
 
 class PlexSource:
     def __init__(self, config: Config):
         if not config.PLEX_SERVER_URL or not config.PLEX_TOKEN:
-            print("Plex credentials not configured.")
+            logger.debug("Plex credentials not configured.")
             self.plex = None
             return
 
@@ -17,7 +18,7 @@ class PlexSource:
 
     def get_current_track(self) -> Track | None:
         if not self.plex:
-            print("Plex credentials not configured.")
+            logger.debug("Plex credentials not configured.")
             return None
 
         for session in self.plex.sessions():

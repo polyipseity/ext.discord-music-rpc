@@ -2,12 +2,13 @@ import datetime
 from soundcloud import SoundCloud
 from . import Track
 from ..config import Config
+from .. import logger
 
 
 class SoundCloudSource:
     def __init__(self, config: Config):
         if not config.SOUNDCLOUD_AUTH_TOKEN:
-            print("SoundCloud credentials not configured.")
+            logger.debug("SoundCloud credentials not configured.")
             self.sc = None
             return
 
@@ -15,7 +16,7 @@ class SoundCloudSource:
 
     def get_current_track(self) -> Track | None:
         if not self.sc:
-            print("SoundCloud credentials not configured.")
+            logger.debug("SoundCloud credentials not configured.")
             return None
 
         song = next(self.sc.get_my_history())

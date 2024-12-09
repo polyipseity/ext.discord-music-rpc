@@ -1,6 +1,7 @@
 import requests
 from . import Track
 from ..config import Config
+from .. import logger
 
 
 class LastFmSource:
@@ -9,11 +10,11 @@ class LastFmSource:
         self.api_key = config.LASTFM_API_KEY
 
         if not self.username or not self.api_key:
-            print("Last.fm credentials not configured.")
+            logger.debug("Last.fm credentials not configured.")
 
     def get_current_track(self) -> Track | None:
         if not self.username or not self.api_key:
-            print("Last.fm username or API key not configured.")
+            logger.debug("Last.fm username or API key not configured.")
             return None
 
         params = {
@@ -47,7 +48,6 @@ class LastFmSource:
                     source="lastfm",
                 )
             return None
-
         except Exception as e:
-            print(f"Error fetching Last.fm track: {e}")
+            logger.error(f"Error fetching Last.fm track: {e}")
             return None
