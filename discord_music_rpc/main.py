@@ -5,11 +5,9 @@ from .discord_rpc import DiscordRichPresence
 
 
 def main():
-    # Validate configuration
-    Config.validate()  # todo return some value
-
-    # Initialize components
     config = Config()
+    config.validate()
+
     music_sources = MusicSourceManager(config)
     discord_rpc = DiscordRichPresence(config)
 
@@ -17,12 +15,23 @@ def main():
         # Connect to Discord RPC
         discord_rpc.connect()
 
-        # Main application loop
+        last_track = None
+
         while True:
             current_track = music_sources.get_current_track()
-            print(current_track)
+
+            if not last_track or (
+                current_track.name != last_track.name
+                and current_track.artist != last_track.artist
+                and current_track.source != last_track.source
+            ):
+                print(
+                    f"Now playing: {current_track.artist} - {current_track.name} ({current_track.source})"
+                )
 
             discord_rpc.update(current_track)
+
+            last_track = current_track
 
             time.sleep(
                 1
@@ -30,8 +39,6 @@ def main():
 
     except KeyboardInterrupt:
         print("\nStopping RPC...")
-    except Exception as e:
-        print(f"An error occurred: {e}")
     finally:
         discord_rpc.close()
 

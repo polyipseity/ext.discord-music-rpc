@@ -22,6 +22,10 @@ class Config:
     # SoundCloud Configuration
     SOUNDCLOUD_AUTH_TOKEN: str = os.getenv("SOUNDCLOUD_AUTH_TOKEN", "")
 
+    # Plex Configuration
+    PLEX_SERVER_URL: str = os.getenv("PLEX_SERVER_URL", "")
+    PLEX_TOKEN: str = os.getenv("PLEX_TOKEN", "")
+
     # Discord RPC Configuration
     DISCORD_CLIENT_ID: str = os.getenv("DISCORD_CLIENT_ID", "")
 
@@ -51,3 +55,14 @@ class Config:
             print(
                 "Note: SOUNDCLOUD_AUTH_TOKEN not configured. SoundCloud support will be disabled."
             )
+
+        if not cls.PLEX_SERVER_URL:
+            print(
+                "Note: PLEX_SERVER_URL not configured. SoundCloud support will be disabled."
+            )
+        if not cls.PLEX_TOKEN:
+            print(
+                "Note: PLEX_TOKEN not configured. SoundCloud support will be disabled."
+            )
+
+        # todo return false if nothings enabled? idk

@@ -9,52 +9,75 @@ class DiscordRichPresence:
         self.client_id = config.DISCORD_CLIENT_ID
         self.rpc = Presence(self.client_id)
         self.last_track: Track | None = None
+        self.last_progress: int | None = None
 
     def connect(self):
         self.rpc.connect()
         print("Connected to Discord RPC")
+
+    def _is_same_track(self, track1: Track | None, track2: Track | None) -> bool:
+        if not track1 or not track2:
+            return False
+
+        return (
+            track1.name == track2.name
+            and track1.artist == track2.artist
+            and track1.album == track2.album
+            and track1.source == track2.source
+        )
 
     def update(self, track: Track | None):
         if not track:
             self.clear()
             return
 
-        try:
-            # buttons = []
-            # buttons.append(
-            #     {
-            #         "label": f"View {track.source.capitalize()} Track",
-            #         "url": track.url or "",
-            #     }
-            # )
+        # buttons = []
+        # buttons.append(
+        #     {
+        #         "label": f"View {track.source.capitalize()} Track",
+        #         "url": track.url or "",
+        #     }
+        # )
 
-            start_time = None
-            end_time = None
+        start_time = None
+        end_time = None
 
-            if track.progress_ms is not None and track.duration_ms is not None:
-                start_time = (
-                    int(datetime.datetime.now().timestamp() * 1000) - track.progress_ms
-                )
-                end_time = start_time + track.duration_ms
+        if not self._is_same_track(track, self.last_track):
+            self.last_progress = None
 
-            self.rpc.update(
-                activity_type=ActivityType.LISTENING,
-                details=track.name,
-                state=track.artist,
-                large_image=track.image,
-                large_text=track.album,
-                # buttons=buttons,
-                start=start_time,
-                end=end_time,
+        if track.progress_ms is not None and track.duration_ms is not None:
+            if (
+                track.progress_ms == self.last_progress
+            ):  # haven't gotten any progress, don't update - discord will handle it
+                return
+
+            start_time = (
+                int(datetime.datetime.now().timestamp() * 1000) - track.progress_ms
             )
+            end_time = start_time + track.duration_ms
+            self.last_progress = track.progress_ms
 
-            self.last_track = track
-        except Exception as e:
-            print(f"Error updating Discord presence: {e}")
+        self.rpc.update(
+            activity_type=ActivityType.LISTENING,
+            details=track.name,
+            state=track.artist,
+            large_image=track.image,
+            large_text=track.album.ljust(
+                2
+            ),  # "large_text" length must be at least 2 characters long
+            # buttons=buttons,
+            start=start_time,
+            end=end_time,
+        )
+
+        self.last_track = track
 
     def clear(self):
         self.rpc.clear()
 
     def close(self):
-        self.clear()
-        self.rpc.close()
+        try:
+            self.clear()
+            self.rpc.close()
+        except Exception as e:
+            print(e)

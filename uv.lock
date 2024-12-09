@@ -62,6 +62,7 @@ name = "discord-music-rpc"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
+    { name = "plexapi" },
     { name = "pypresence" },
     { name = "python-dotenv" },
     { name = "requests" },
@@ -71,6 +72,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
+    { name = "plexapi", specifier = ">=4.16.0" },
     { name = "pypresence", url = "https://github.com/qwertyquerty/pypresence/archive/master.zip" },
     { name = "python-dotenv", specifier = ">=1.0.1" },
     { name = "requests", specifier = ">=2.32.3" },
@@ -85,6 +87,18 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/f1/70/7703c29685631f5a7590aa73f1f1d3fa9a380e654b86af429e0934a32f7d/idna-3.10.tar.gz", hash = "sha256:12f65c9b470abda6dc35cf8e63cc574b1c52b11df2c86030af0ac09b01b13ea9", size = 190490 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/76/c6/c88e154df9c4e1a2a66ccf0005a88dfb2650c1dffb6f5ce603dfbd452ce3/idna-3.10-py3-none-any.whl", hash = "sha256:946d195a0d259cbba61165e88e65941f16e9b36ea6ddb97f00452bae8b1287d3", size = 70442 },
+]
+
+[[package]]
+name = "plexapi"
+version = "4.16.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "requests" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/17/78/eea1f69eebdcda76fbcd368e9bd7bd6c2daa95cbdf6fa8eaf36e3f7d45b3/plexapi-4.16.0.tar.gz", hash = "sha256:d2798e4f234e139675ac8413bb30657425b3c74d8ff3b2efaff18bfe1644c2e9", size = 153585 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/6b/2f/c06acf88ec03b8393a9747639ff75bdd89baf2b6e1025e75710df83225db/PlexAPI-4.16.0-py3-none-any.whl", hash = "sha256:0e96f9fbfdae55a0d707517f2843067a2c8e05e38f23e4fd30beb3a9ba6f0712", size = 166060 },
 ]
 
 [[package]]
