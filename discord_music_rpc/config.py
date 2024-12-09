@@ -19,6 +19,9 @@ class Config:
     LASTFM_USERNAME: str = os.getenv("LASTFM_USERNAME", "")
     LASTFM_API_KEY: str = os.getenv("LASTFM_API_KEY", "")
 
+    # SoundCloud Configuration
+    SOUNDCLOUD_AUTH_TOKEN: str = os.getenv("SOUNDCLOUD_AUTH_TOKEN", "")
+
     # Discord RPC Configuration
     DISCORD_CLIENT_ID: str = os.getenv("DISCORD_CLIENT_ID", "")
 
@@ -42,4 +45,9 @@ class Config:
         if not cls.LASTFM_API_KEY:
             print(
                 "Note: LASTFM_API_KEY not configured. Spotify support will be disabled."
+            )
+
+        if not cls.SOUNDCLOUD_AUTH_TOKEN:
+            print(
+                "Note: SOUNDCLOUD_AUTH_TOKEN not configured. SoundCloud support will be disabled."
             )

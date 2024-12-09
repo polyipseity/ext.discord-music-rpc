@@ -1,17 +1,18 @@
-import os
+import datetime
 import requests
 from dataclasses import dataclass, field
 from typing import Any, Optional, Literal, List
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from .config import Config
+from soundcloud import SoundCloud
 
 
 @dataclass
 class Track:
     name: str
     artist: str
-    source: Literal["spotify", "lastfm"]
+    source: Literal["spotify", "lastfm", "soundcloud"]
     album: Optional[str] = None
     url: Optional[str] = None
     image: Optional[str] = None
@@ -121,11 +122,42 @@ class LastFmSource:
             return None
 
 
+class SoundCloudSource:
+    def __init__(self, config: Config):
+        if not config.SOUNDCLOUD_AUTH_TOKEN:
+            print("SoundCloud credentials not configured.")
+            self.sc = None
+            return
+
+        self.sc = SoundCloud(auth_token=config.SOUNDCLOUD_AUTH_TOKEN)
+
+    def get_current_track(self) -> Optional[Track]:
+        if not self.sc:
+            print("SoundCloud credentials not configured.")
+            return None
+
+        song = next(self.sc.get_my_history())
+        if not song:
+            return None
+
+        now = int(datetime.datetime.now().timestamp() * 1000)
+
+        if now > song.played_at and now <= song.played_at + song.track.duration:
+            return Track(
+                name=song.track.title,
+                artist=song.track.user.username,
+                url=song.track.permalink_url,
+                image=song.track.artwork_url,
+                source="soundcloud",
+            )
+
+
 class MusicSourceManager:
     def __init__(self, config: Config):
         self.sources: List[Any] = [  # also works as priority highest -> lowest
             SpotifySource(config),  # highest priority because it has progress info
             LastFmSource(config),  # fallback
+            SoundCloudSource(config),
         ]
 
     def get_current_track(self) -> Optional[Track]:
