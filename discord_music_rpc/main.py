@@ -2,6 +2,7 @@ import time
 from .config import Config
 from .sources.sources import MusicSourceManager
 from .discord_rpc import DiscordRichPresence
+from .utils import is_same_track
 
 
 def main():
@@ -20,11 +21,7 @@ def main():
         while True:
             current_track = music_sources.get_current_track()
 
-            if not last_track or (
-                current_track.name != last_track.name
-                and current_track.artist != last_track.artist
-                and current_track.source != last_track.source
-            ):
+            if not is_same_track(current_track, last_track):
                 print(
                     f"Now playing: {current_track.artist} - {current_track.name} ({current_track.source})"
                 )

@@ -2,6 +2,7 @@ import datetime
 from pypresence import Presence, ActivityType
 from .sources import Track
 from .config import Config
+from .utils import is_same_track
 
 
 class DiscordRichPresence:
@@ -14,17 +15,6 @@ class DiscordRichPresence:
     def connect(self):
         self.rpc.connect()
         print("Connected to Discord RPC")
-
-    def _is_same_track(self, track1: Track | None, track2: Track | None) -> bool:
-        if not track1 or not track2:
-            return False
-
-        return (
-            track1.name == track2.name
-            and track1.artist == track2.artist
-            and track1.album == track2.album
-            and track1.source == track2.source
-        )
 
     def update(self, track: Track | None):
         if not track:
@@ -42,7 +32,7 @@ class DiscordRichPresence:
         start_time = None
         end_time = None
 
-        if not self._is_same_track(track, self.last_track):
+        if not is_same_track(track, self.last_track):
             self.last_progress = None
 
         if track.progress_ms is not None and track.duration_ms is not None:
