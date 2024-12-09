@@ -7,7 +7,7 @@
 ## supported services
 
 - Spotify
-- Plex/Plexamp
+- Plex/Plexamp (cover art not currently supported)
 - SoundCloud
 - Last.fm
 

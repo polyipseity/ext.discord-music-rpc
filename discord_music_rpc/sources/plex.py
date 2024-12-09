@@ -33,7 +33,7 @@ class PlexSource:
                 artist=artist.title,
                 album=album.title,
                 url=None,
-                image=track.thumbUrl,
+                image=None,  # todo: track.thumbUrl
                 progress_ms=track.viewOffset,
                 duration_ms=track.duration,
                 source="plex",
