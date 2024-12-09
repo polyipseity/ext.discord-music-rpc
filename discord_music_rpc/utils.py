@@ -1,3 +1,4 @@
+import yaml
 from .sources import Track
 
 
@@ -11,3 +12,8 @@ def is_same_track(track1: Track | None, track2: Track | None) -> bool:
         and track1.album == track2.album
         and track1.source == track2.source
     )
+
+
+class PrettyDumper(yaml.Dumper):
+    def increase_indent(self, flow=False, indentless=False):
+        return super().increase_indent(flow, False)

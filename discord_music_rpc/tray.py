@@ -4,7 +4,7 @@ import sys
 import threading
 from pystray import Icon, Menu, MenuItem
 from PIL import Image
-from . import killer, log_dir
+from . import killer, LOG_DIR
 
 
 def on_quit(icon, item):
@@ -13,7 +13,7 @@ def on_quit(icon, item):
 
 
 def open_logs(icon, item):
-    log_file = os.path.join(log_dir, "app.log")
+    log_file = os.path.join(LOG_DIR, "app.log")
 
     if os.path.exists(log_file):
         if sys.platform.startswith("darwin"):  # macOS

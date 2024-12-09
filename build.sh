@@ -1,0 +1,2 @@
+uv run python -m nuitka --standalone --onefile --follow-imports --python-flag=no_site --output-dir=dist --output-filename=discord-music-rpc --include-data-dir=discord_music_rpc/resources=discord_music_rpc/resources --windows-console-mode=disable --python-flag=-m discord_music_rpc
+echo done

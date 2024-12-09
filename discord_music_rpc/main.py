@@ -3,7 +3,7 @@ import time
 
 import pypresence
 
-from .config import Config
+from .config import Config, load_config
 from .sources.sources import MusicSourceManager
 from .discord_rpc import DiscordRichPresence
 from .utils import is_same_track
@@ -12,7 +12,7 @@ from . import killer, logger
 
 
 def main():
-    config = Config()
+    config = load_config()
     config.validate()
 
     music_sources = MusicSourceManager(config)
