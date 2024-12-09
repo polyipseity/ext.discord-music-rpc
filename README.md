@@ -4,14 +4,14 @@
   <img alt="preview" src="./assets/preview.webp">
 </p>
 
-# supported services
+## supported services
 
 - Spotify
 - Plex/Plexamp
 - SoundCloud
 - Last.fm
 
-# setup
+## setup
 
 - Create an application at https://discord.com/developers/ (the name will be the text displayed in Listening to ...)
 - Copy `.env.template` to `.env`
@@ -22,6 +22,6 @@
   - SoundCloud - copy your token from your browser cookies after you've logged in (f12 -> Application -> Cookies -> soundcloud.com -> `oauth_token`) into `.env`
   - Plex/Plexamp - [Get an auth token](https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/) and copy it into `.env` along with your server URL
 
-# disclaimer
+## disclaimer
 
 This isn't really meant for public use _yet?_. Check out [discord-music-presence](https://github.com/ungive/discord-music-presence) if you want a more fully-featured rpc client. It is closed-source though and only works with media players which report the currently playing song to the OS - i.e. not SoundCloud in browser, Plexamp or Last.fm.
