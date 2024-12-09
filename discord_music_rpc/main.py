@@ -1,6 +1,6 @@
 import time
 from .config import Config
-from .music_sources import MusicSourceManager
+from .sources.sources import MusicSourceManager
 from .discord_rpc import DiscordRichPresence
 
 

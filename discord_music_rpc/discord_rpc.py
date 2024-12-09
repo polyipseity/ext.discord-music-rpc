@@ -1,20 +1,20 @@
 import datetime
-from typing import Optional
 from pypresence import Presence, ActivityType
-from .music_sources import Track, Config
+from .sources import Track
+from .config import Config
 
 
 class DiscordRichPresence:
     def __init__(self, config: Config):
         self.client_id = config.DISCORD_CLIENT_ID
         self.rpc = Presence(self.client_id)
-        self.last_track: Optional[Track] = None
+        self.last_track: Track | None = None
 
     def connect(self):
         self.rpc.connect()
         print("Connected to Discord RPC")
 
-    def update(self, track: Optional[Track]):
+    def update(self, track: Track | None):
         if not track:
             self.clear()
             return
