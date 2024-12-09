@@ -1,8 +1,31 @@
 import logging
 import os
 import signal
+import sys
 
-log_dir = os.path.dirname(os.path.abspath(__file__))
+app_name = "discord-music-rpc"
+
+
+def get_log_directory():
+    """
+    Get platform-specific application log directory.
+    """
+    if sys.platform == "win32":
+        # Windows: Use AppData\Local\<AppName>\Logs
+        log_dir = os.path.join(os.getenv("LOCALAPPDATA", ""), app_name, "Logs")
+    elif sys.platform == "darwin":
+        # macOS: ~/Library/Logs/<AppName>
+        log_dir = os.path.join(os.path.expanduser("~/Library/Logs"), app_name)
+    else:
+        # Linux: ~/.local/share/<app_name>/logs or /var/log/<app_name>
+        log_dir = os.path.join(os.path.expanduser("~/.local/share"), app_name, "logs")
+
+    os.makedirs(log_dir, exist_ok=True)
+    return log_dir
+
+
+log_dir = get_log_directory()
+os.makedirs(log_dir, exist_ok=True)
 
 logging.basicConfig(
     level=logging.INFO,

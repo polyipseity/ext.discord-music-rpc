@@ -25,21 +25,25 @@ def open_logs(icon, item):
 
 
 def update_tray(icon, track):
-    icon.menu = Menu(
+    menu_items = [
         MenuItem("Discord Music RPC", lambda icon, item: None, enabled=False),
-        MenuItem(
-            f"{track.artist} - {track.name}",
-            lambda icon, item: None,
-            enabled=False,
-        ),
         MenuItem("View Logs", open_logs),
         MenuItem("Quit", on_quit),
-    )
+    ]
+
+    if track:
+        menu_items.insert(
+            1,
+            MenuItem(
+                f"{track.artist} - {track.name}", lambda icon, item: None, enabled=False
+            ),
+        )
+
+    icon.menu = Menu(*menu_items)
 
 
 def run_tray_icon():
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    icon_path = os.path.join(script_dir, "../assets/cd.png")
+    icon_path = os.path.join(os.path.dirname(__file__), "resources/cd.png")
 
     icon_image = Image.open(icon_path)
 

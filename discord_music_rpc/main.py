@@ -36,7 +36,9 @@ def main():
                             f"Now playing: {current_track.artist} - {current_track.name} ({current_track.source})"
                         )
 
-                discord_rpc.update(current_track)
+                    discord_rpc.update(current_track)
+                else:
+                    discord_rpc.clear()
 
                 update_tray(icon, current_track)
 
