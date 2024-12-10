@@ -12,6 +12,8 @@ class DiscordRichPresence:
     def __init__(self, config: Config):
         self.client_id = config.discord.client_id
         self.rpc = Presence(self.client_id)
+        self.show_progress = config.discord.show_progress
+
         self.last_track: Track | None = None
         self.last_progress: int | None = None
 
@@ -52,8 +54,8 @@ class DiscordRichPresence:
             )  # "large_text" length must be at least 2 characters long
             if track.album
             else None,
-            start=start_time,
-            end=end_time,
+            start=start_time if self.show_progress else None,
+            end=end_time if self.show_progress else None,
         )
 
         self.last_track = track
