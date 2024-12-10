@@ -8,7 +8,7 @@ from . import logger
 
 class DiscordRichPresence:
     def __init__(self, config: Config):
-        self.client_id = config.DISCORD_CLIENT_ID
+        self.client_id = config.discord.client_id
         self.rpc = Presence(self.client_id)
         self.last_track: Track | None = None
         self.last_progress: int | None = None

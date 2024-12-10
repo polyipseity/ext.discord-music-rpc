@@ -7,12 +7,12 @@ from .. import logger
 
 class SoundCloudSource:
     def __init__(self, config: Config):
-        if not config.SOUNDCLOUD_AUTH_TOKEN:
+        if not config.soundcloud.auth_token:
             logger.debug("SoundCloud credentials not configured.")
             self.sc = None
             return
 
-        self.sc = SoundCloud(auth_token=config.SOUNDCLOUD_AUTH_TOKEN)
+        self.sc = SoundCloud(auth_token=config.soundcloud.auth_token)
 
     def get_current_track(self) -> Track | None:
         if not self.sc:

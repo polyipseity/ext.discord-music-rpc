@@ -9,66 +9,71 @@ from . import logger, CONFIG_DIR
 
 CFG_PATH = CONFIG_DIR / "config.yaml"
 
+class DiscordConfig(BaseModel):
+    client_id: str | None = None
+
+class SpotifyConfig(BaseModel):
+    client_id: str | None = None
+    client_secret: str | None = None
+    redirect_uri: str = "http://localhost:8888/callback"
+
+class LastFmConfig(BaseModel):
+    username: str | None = None
+    api_key: str | None = None
+
+class SoundCloudConfig(BaseModel):
+    auth_token: str | None = None
+
+class PlexConfig(BaseModel):
+    server_url: str | None = None
+    token: str | None = None
 
 class Config(BaseModel):
-    # Spotify Configuration
-    SPOTIFY_CLIENT_ID: str | None = None
-    SPOTIFY_CLIENT_SECRET: str | None = None
-    SPOTIFY_REDIRECT_URI: str = "http://localhost:8888/callback"
-
-    # Last.fm Configuration
-    LASTFM_USERNAME: str | None = None
-    LASTFM_API_KEY: str | None = None
-
-    # SoundCloud Configuration
-    SOUNDCLOUD_AUTH_TOKEN: str | None = None
-
-    # Plex Configuration
-    PLEX_SERVER_URL: str | None = None
-    PLEX_TOKEN: str | None = None
-
-    # Discord RPC Configuration
-    DISCORD_CLIENT_ID: str | None = None
+    discord: DiscordConfig = DiscordConfig()
+    spotify: SpotifyConfig = SpotifyConfig()
+    lastfm: LastFmConfig = LastFmConfig()
+    soundcloud: SoundCloudConfig = SoundCloudConfig()
+    plex: PlexConfig = PlexConfig()
 
     def validate(self):
-        if not self.DISCORD_CLIENT_ID:
+        if not self.discord.client_id:
             logger.error(
-                f"DISCORD_CLIENT_ID not configured. Please follow the steps in the README and fill out {CFG_PATH}"
+                f"discord.client_id not configured. Please follow the steps in the README and fill out {CFG_PATH}"
             )
             return False
 
         # Spotify configuration checks
-        if not self.SPOTIFY_CLIENT_ID:
+        if not self.spotify.client_id:
             logger.info(
-                "Note: SPOTIFY_CLIENT_ID not configured. Spotify support will be disabled."
+                "Note: spotify.client_id not configured. Spotify support will be disabled."
             )
-        if not self.SPOTIFY_CLIENT_SECRET:
+        if not self.spotify.client_secret:
             logger.info(
-                "Note: SPOTIFY_CLIENT_SECRET not configured. Spotify support will be disabled."
+                "Note: spotify.client_secret not configured. Spotify support will be disabled."
             )
 
         # Last.fm configuration checks
-        if not self.LASTFM_USERNAME:
+        if not self.lastfm.username:
             logger.info(
-                "Note: LASTFM_USERNAME not configured. Spotify support will be disabled."
+                "Note: lastfm.username not configured. Spotify support will be disabled."
             )
-        if not self.LASTFM_API_KEY:
+        if not self.lastfm.api_key:
             logger.info(
-                "Note: LASTFM_API_KEY not configured. Spotify support will be disabled."
-            )
-
-        if not self.SOUNDCLOUD_AUTH_TOKEN:
-            logger.info(
-                "Note: SOUNDCLOUD_AUTH_TOKEN not configured. SoundCloud support will be disabled."
+                "Note: lastfm.api_key not configured. Spotify support will be disabled."
             )
 
-        if not self.PLEX_SERVER_URL:
+        if not self.soundcloud.auth_token:
             logger.info(
-                "Note: PLEX_SERVER_URL not configured. SoundCloud support will be disabled."
+                "Note: soundcloud.auth_token not configured. SoundCloud support will be disabled."
             )
-        if not self.PLEX_TOKEN:
+
+        if not self.plex.server_url:
             logger.info(
-                "Note: PLEX_TOKEN not configured. SoundCloud support will be disabled."
+                "Note: plex.server_url not configured. SoundCloud support will be disabled."
+            )
+        if not self.plex.token:
+            logger.info(
+                "Note: plex.token not configured. SoundCloud support will be disabled."
             )
 
         # todo return false if nothings enabled? idk

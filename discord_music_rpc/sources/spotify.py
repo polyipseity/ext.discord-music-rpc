@@ -8,8 +8,8 @@ from .. import logger
 class SpotifySource:
     def __init__(self, config: Config):
         if (
-            not config.SPOTIFY_CLIENT_ID
-            or not config.SPOTIFY_CLIENT_SECRET
+            not config.spotify.client_id
+            or not config.spotify.client_secret
             or not config.SPOTIFY_REDIRECT_URI
         ):
             logger.debug("Spotify credentials not configured.")
@@ -18,8 +18,8 @@ class SpotifySource:
 
         self.client = spotipy.Spotify(
             auth_manager=SpotifyOAuth(
-                client_id=config.SPOTIFY_CLIENT_ID,
-                client_secret=config.SPOTIFY_CLIENT_SECRET,
+                client_id=config.spotify.client_id,
+                client_secret=config.spotify.client_secret,
                 redirect_uri=config.SPOTIFY_REDIRECT_URI,
                 scope="user-read-currently-playing user-read-playback-state",
             )

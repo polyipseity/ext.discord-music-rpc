@@ -9,12 +9,12 @@ from .. import logger
 
 class PlexSource:
     def __init__(self, config: Config):
-        if not config.PLEX_SERVER_URL or not config.PLEX_TOKEN:
+        if not config.plex.server_url or not config.plex.token:
             logger.debug("Plex credentials not configured.")
             self.plex = None
             return
 
-        self.plex = PlexServer(config.PLEX_SERVER_URL, config.PLEX_TOKEN)
+        self.plex = PlexServer(config.plex.server_url, config.plex.token)
 
     def get_current_track(self) -> Track | None:
         if not self.plex:

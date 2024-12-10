@@ -6,8 +6,8 @@ from .. import logger
 
 class LastFmSource:
     def __init__(self, config: Config):
-        self.username = config.LASTFM_USERNAME
-        self.api_key = config.LASTFM_API_KEY
+        self.username = config.lastfm.username
+        self.api_key = config.lastfm.api_key
 
         if not self.username or not self.api_key:
             logger.debug("Last.fm credentials not configured.")
