@@ -110,7 +110,7 @@ wheels = [
 
 [[package]]
 name = "discord-music-rpc"
-version = "0.1.0"
+version = "0.1.1"
 source = { editable = "." }
 dependencies = [
     { name = "pillow" },
@@ -137,7 +137,7 @@ requires-dist = [
     { name = "pillow", specifier = ">=11.0.0" },
     { name = "plexapi", specifier = ">=4.16.0" },
     { name = "pydantic", specifier = ">=2.10.3" },
-    { name = "pypresence", url = "https://github.com/qwertyquerty/pypresence/archive/master.zip" },
+    { name = "pypresence", git = "https://github.com/qwertyquerty/pypresence" },
     { name = "pystray", specifier = ">=0.19.5" },
     { name = "pyyaml", specifier = ">=6.0.2" },
     { name = "requests", specifier = ">=2.32.3" },
@@ -429,8 +429,7 @@ wheels = [
 [[package]]
 name = "pypresence"
 version = "4.3.0"
-source = { url = "https://github.com/qwertyquerty/pypresence/archive/master.zip" }
-sdist = { url = "https://github.com/qwertyquerty/pypresence/archive/master.zip", hash = "sha256:7648c8baead21cdb345a285ec67e849109a3f7ec7cd9053fd8b9bb17141eb4d6" }
+source = { git = "https://github.com/qwertyquerty/pypresence#f856ccaaeb2321f64f9692b75dc3ceda5c927f42" }
 
 [[package]]
 name = "pystray"
