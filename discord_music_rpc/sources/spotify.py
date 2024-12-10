@@ -10,7 +10,7 @@ class SpotifySource(BaseSource):
         if (
             not self.config.spotify.client_id
             or not self.config.spotify.client_secret
-            or not self.config.SPOTIFY_REDIRECT_URI
+            or not self.config.spotify.redirect_uri
         ):
             logger.debug("Spotify credentials not configured.")
             return
@@ -19,7 +19,7 @@ class SpotifySource(BaseSource):
             auth_manager=SpotifyOAuth(
                 client_id=self.config.spotify.client_id,
                 client_secret=self.config.spotify.client_secret,
-                redirect_uri=self.config.SPOTIFY_REDIRECT_URI,
+                redirect_uri=self.config.spotify.redirect_uri,
                 scope="user-read-currently-playing user-read-playback-state",
             )
         )
