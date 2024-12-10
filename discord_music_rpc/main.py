@@ -10,48 +10,65 @@ from .tray import run_tray_icon, update_tray
 from .utils import is_same_track
 
 
-def run_rpc(music_sources: MusicSourceManager, discord_rpc: DiscordRichPresence, icon):
-    last_track = None
+def get_config(current_config=None):
+    while True:
+        config = load_config()
 
-    while not killer.kill_now:
-        current_track = music_sources.get_current_track()
+        if config == current_config:
+            return config, False
 
-        if current_track:
-            if not is_same_track(current_track, last_track):
-                logger.info(
-                    f"Now playing: {current_track.artist} - {current_track.name} ({current_track.source})"
-                )
+        if not config.validate():
+            logger.info("Config failed to validate")
+            time.sleep(5)
+            continue
 
-            discord_rpc.update(current_track)
-        else:
-            discord_rpc.clear()
-
-        update_tray(icon, current_track)
-
-        last_track = current_track
-
-        time.sleep(1)  # todo: config this? diff services diff sleeps? (ratelimiting)
+        return config, True
 
 
 def main():
     icon = run_tray_icon()
 
+    config = None
+
     while not killer.kill_now:
         try:
-            config = load_config()
-
-            if not config.validate():
-                logger.info("Config failed to validate")
-                time.sleep(5)
-                continue
+            config, _config_updated = get_config(config)
 
             music_sources = MusicSourceManager(config)
             discord_rpc = DiscordRichPresence(config)
 
             try:
+                logger.debug("Connecting to RPC")
                 discord_rpc.connect()
+                logger.debug("Connected to RPC")
 
-                run_rpc(music_sources, discord_rpc, icon)
+                last_track = None
+
+                while not killer.kill_now:
+                    _config, config_updated = get_config(config)
+                    if config_updated:
+                        logger.info("Config updated, reloading")
+                        break
+
+                    current_track = music_sources.get_current_track()
+
+                    if current_track:
+                        if not is_same_track(current_track, last_track):
+                            logger.info(
+                                f"Now playing: {current_track.artist} - {current_track.name} ({current_track.source})"
+                            )
+
+                        discord_rpc.update(current_track)
+                    else:
+                        discord_rpc.clear()
+
+                    update_tray(icon, current_track)
+
+                    last_track = current_track
+
+                    time.sleep(
+                        1
+                    )  # todo: config this? diff services diff sleeps? (ratelimiting)
             except pypresence.exceptions.PipeClosed:
                 logger.warning("Lost connection to Discord, attempting to reconnect...")
                 time.sleep(1)
@@ -61,8 +78,9 @@ def main():
             except pypresence.exceptions.DiscordError as e:
                 logger.warning(e)
                 time.sleep(1)
-            finally:
-                discord_rpc.close()
+
+            discord_rpc.close()
+            logger.debug("Closed Discord RPC")
         except Exception as e:
             logger.error(f"Unexpected error in main loop: {e}")
             time.sleep(5)
