@@ -22,14 +22,6 @@ class DiscordRichPresence:
             self.clear()
             return
 
-        # buttons = []
-        # buttons.append(
-        #     {
-        #         "label": f"View {track.source.capitalize()} Track",
-        #         "url": track.url or "",
-        #     }
-        # )
-
         start_time = None
         end_time = None
 
@@ -56,7 +48,6 @@ class DiscordRichPresence:
             large_text=track.album.ljust(
                 2
             ),  # "large_text" length must be at least 2 characters long
-            # buttons=buttons,
             start=start_time,
             end=end_time,
         )

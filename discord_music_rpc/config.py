@@ -31,6 +31,12 @@ class Config(BaseModel):
     DISCORD_CLIENT_ID: str | None = None
 
     def validate(self):
+        if not self.DISCORD_CLIENT_ID:
+            logger.error(
+                f"DISCORD_CLIENT_ID not configured. Please follow the steps in the README and fill out {CFG_PATH}."
+            )
+            return False
+
         # Spotify configuration checks
         if not self.SPOTIFY_CLIENT_ID:
             logger.info(
@@ -66,6 +72,7 @@ class Config(BaseModel):
             )
 
         # todo return false if nothings enabled? idk
+        return True
 
     def dump(self):
         return self.model_dump()

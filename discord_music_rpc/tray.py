@@ -42,7 +42,7 @@ def update_tray(icon, track):
     icon.menu = Menu(*menu_items)
 
 
-def run_tray_icon():
+def run_tray_icon() -> Icon:
     icon_path = os.path.join(os.path.dirname(__file__), "resources/cd.png")
 
     icon_image = Image.open(icon_path)
@@ -54,7 +54,6 @@ def run_tray_icon():
     )
     icon = Icon("discord-music-rpc", icon_image, menu=menu)
 
-    tray_thread = threading.Thread(target=icon.run, daemon=True)
-    tray_thread.start()
+    icon.run_detached()
 
     return icon

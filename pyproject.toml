@@ -30,4 +30,4 @@ dev-dependencies = ["nuitka>=2.5.6"]
 pypresence = { url = "https://github.com/qwertyquerty/pypresence/archive/master.zip" }
 
 [project.scripts]
-discord-music-rpc = "discord_music_rpc.main:main"
+discord-music-rpc = "discord_music_rpc.__main__:main"

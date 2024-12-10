@@ -34,7 +34,7 @@ def get_config_dir():
     if data_path is None:
         exit()
 
-    os.makedirs(LOG_DIR, exist_ok=True)
+    os.makedirs(data_path, exist_ok=True)
     return Path(data_path).expanduser()
 
 
@@ -56,13 +56,13 @@ CONFIG_DIR = get_config_dir()
 
 
 class GracefulKiller:
-    kill_now = False
-
     def __init__(self):
+        self.kill_now = False
         signal.signal(signal.SIGINT, self.exit_gracefully)
         signal.signal(signal.SIGTERM, self.exit_gracefully)
 
-    def exit_gracefully(self):
+    def exit_gracefully(self, signum=None, frame=None):
+        print(f"\nReceived exit signal {signum}. Shutting down...")
         self.kill_now = True
 
 
