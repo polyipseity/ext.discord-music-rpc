@@ -33,7 +33,7 @@ class Config(BaseModel):
     def validate(self):
         if not self.DISCORD_CLIENT_ID:
             logger.error(
-                f"DISCORD_CLIENT_ID not configured. Please follow the steps in the README and fill out {CFG_PATH}."
+                f"DISCORD_CLIENT_ID not configured. Please follow the steps in the README and fill out {CFG_PATH}"
             )
             return False
 
