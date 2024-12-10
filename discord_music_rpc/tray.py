@@ -1,7 +1,6 @@
 import os
 import subprocess
 import sys
-import threading
 from pystray import Icon, Menu, MenuItem
 from PIL import Image
 from . import killer, LOG_DIR

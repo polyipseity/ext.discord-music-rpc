@@ -9,24 +9,30 @@ from . import logger, CONFIG_DIR
 
 CFG_PATH = CONFIG_DIR / "config.yaml"
 
+
 class DiscordConfig(BaseModel):
     client_id: str | None = None
+
 
 class SpotifyConfig(BaseModel):
     client_id: str | None = None
     client_secret: str | None = None
     redirect_uri: str = "http://localhost:8888/callback"
 
+
 class LastFmConfig(BaseModel):
     username: str | None = None
     api_key: str | None = None
 
+
 class SoundCloudConfig(BaseModel):
     auth_token: str | None = None
+
 
 class PlexConfig(BaseModel):
     server_url: str | None = None
     token: str | None = None
+
 
 class Config(BaseModel):
     discord: DiscordConfig = DiscordConfig()

@@ -13,7 +13,7 @@ from . import killer, logger
 
 def run_rpc(music_sources, discord_rpc, icon):
     last_track = None
-    
+
     while not killer.kill_now:
         current_track = music_sources.get_current_track()
 
@@ -39,7 +39,7 @@ def run():
 
     while not killer.kill_now:
         config = load_config()
-        
+
         if not config.validate():
             logger.info("Config failed to validate")
             time.sleep(5)
