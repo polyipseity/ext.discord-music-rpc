@@ -39,7 +39,7 @@ class SpotifySource(BaseSource):
             track = current_track["item"]
             return Track(
                 name=track["name"],
-                artist=track["artists"][0]["name"],
+                artist=", ".join([artist["name"] for artist in track["artists"]]),
                 album=track["album"]["name"],
                 url=track["external_urls"]["spotify"],
                 image=(
