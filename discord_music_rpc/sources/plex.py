@@ -1,27 +1,27 @@
-import datetime
-import pprint
+from plexapi.audio import Album, Artist
+from plexapi.audio import Track as PlexTrack
 from plexapi.server import PlexServer
-from plexapi.audio import Audio, Track as PlexTrack, Album, Artist
-from . import Track
-from ..config import Config
+
 from .. import logger
+from . import BaseSource, Track
 
 
-class PlexSource:
-    def __init__(self, config: Config):
-        if not config.plex.server_url or not config.plex.token:
+class PlexSource(BaseSource):
+    def initialize_client(self):
+        if not self.config.plex.server_url or not self.config.plex.token:
             logger.debug("Plex credentials not configured.")
-            self.plex = None
-            return
-
-        self.plex = PlexServer(config.plex.server_url, config.plex.token)
+            self.client = None
+        else:
+            self.client = PlexServer(
+                self.config.plex.server_url, self.config.plex.token
+            )
 
     def get_current_track(self) -> Track | None:
-        if not self.plex:
+        if not self.client:
             logger.debug("Plex credentials not configured.")
             return None
 
-        for session in self.plex.sessions():
+        for session in self.client.sessions():
             if session.type != "track":
                 continue
 
@@ -34,8 +34,10 @@ class PlexSource:
                 artist=artist.title,
                 album=album.title,
                 url=None,
-                image=None,  # todo: track.thumbUrl
+                image=None,  # Placeholder for thumbnail logic
                 progress_ms=track.viewOffset,
                 duration_ms=track.duration,
                 source="plex",
             )
+
+        return None

@@ -1,14 +1,13 @@
-import threading
 import time
 
 import pypresence
 
-from .config import load_config
-from .sources.sources import MusicSourceManager
-from .discord_rpc import DiscordRichPresence
-from .utils import is_same_track
-from .tray import run_tray_icon, update_tray
 from . import killer, logger
+from .config import load_config
+from .discord_rpc import DiscordRichPresence
+from .sources.sources import MusicSourceManager
+from .tray import run_tray_icon, update_tray
+from .utils import is_same_track
 
 
 def run_rpc(music_sources, discord_rpc, icon):

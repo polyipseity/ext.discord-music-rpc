@@ -1,20 +1,23 @@
 import requests
-from . import Track
-from ..config import Config
+
 from .. import logger
+from . import BaseSource, Track
 
 
-class LastFmSource:
-    def __init__(self, config: Config):
-        self.username = config.lastfm.username
-        self.api_key = config.lastfm.api_key
+class LastFmSource(BaseSource):
+    def initialize_client(self):
+        self.username = self.config.lastfm.username
+        self.api_key = self.config.lastfm.api_key
 
         if not self.username or not self.api_key:
             logger.debug("Last.fm credentials not configured.")
+            self.client = None
+        else:
+            self.client = True  # Placeholder to signify initialization success
 
     def get_current_track(self) -> Track | None:
-        if not self.username or not self.api_key:
-            logger.debug("Last.fm username or API key not configured.")
+        if not self.client:
+            logger.debug("Last.fm credentials not configured.")
             return None
 
         params = {
@@ -29,7 +32,6 @@ class LastFmSource:
             response = requests.get("https://ws.audioscrobbler.com/2.0/", params=params)
             data = response.json()
 
-            # Check if a track is currently playing
             track = data["recenttracks"]["track"][0]
             if "@attr" in track and track["@attr"].get("nowplaying") == "true":
                 return Track(

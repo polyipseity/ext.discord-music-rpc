@@ -1,9 +1,11 @@
 import os
 import subprocess
 import sys
-from pystray import Icon, Menu, MenuItem
+
 from PIL import Image
-from . import killer, LOG_DIR
+from pystray import Icon, Menu, MenuItem
+
+from . import LOG_DIR, killer
 
 
 def on_quit(icon, item):

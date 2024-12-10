@@ -1,9 +1,9 @@
+from ..config import Config
 from . import Track
 from .lastfm import LastFmSource
+from .plex import PlexSource
 from .soundcloud import SoundCloudSource
 from .spotify import SpotifySource
-from .plex import PlexSource
-from ..config import Config
 
 
 class MusicSourceManager:

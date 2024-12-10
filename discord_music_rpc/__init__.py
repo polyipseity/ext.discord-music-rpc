@@ -1,8 +1,8 @@
 import logging
 import os
-from pathlib import Path
 import signal
 import sys
+from pathlib import Path
 
 app_name = "discord-music-rpc"
 

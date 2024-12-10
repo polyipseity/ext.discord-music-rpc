@@ -1,34 +1,33 @@
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
-from . import Track
-from ..config import Config
+
 from .. import logger
+from . import BaseSource, Track
 
 
-class SpotifySource:
-    def __init__(self, config: Config):
+class SpotifySource(BaseSource):
+    def initialize_client(self):
         if (
-            not config.spotify.client_id
-            or not config.spotify.client_secret
-            or not config.SPOTIFY_REDIRECT_URI
+            not self.config.spotify.client_id
+            or not self.config.spotify.client_secret
+            or not self.config.SPOTIFY_REDIRECT_URI
         ):
             logger.debug("Spotify credentials not configured.")
-            self.client = None
             return
 
         self.client = spotipy.Spotify(
             auth_manager=SpotifyOAuth(
-                client_id=config.spotify.client_id,
-                client_secret=config.spotify.client_secret,
-                redirect_uri=config.SPOTIFY_REDIRECT_URI,
+                client_id=self.config.spotify.client_id,
+                client_secret=self.config.spotify.client_secret,
+                redirect_uri=self.config.SPOTIFY_REDIRECT_URI,
                 scope="user-read-currently-playing user-read-playback-state",
             )
         )
 
-    def get_current_track(self) -> Track | None:
+    def get_current_track(self):
         if not self.client:
             logger.debug("Spotify credentials not configured.")
-            return
+            return None
 
         try:
             current_track = self.client.current_playback()

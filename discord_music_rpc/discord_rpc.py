@@ -1,9 +1,11 @@
 import datetime
-from pypresence import Presence, ActivityType
-from .sources import Track
-from .config import Config
-from .utils import is_same_track
+
+from pypresence import ActivityType, Presence
+
 from . import logger
+from .config import Config
+from .sources import Track
+from .utils import is_same_track
 
 
 class DiscordRichPresence:
@@ -47,7 +49,9 @@ class DiscordRichPresence:
             large_image=track.image,
             large_text=track.album.ljust(
                 2
-            ),  # "large_text" length must be at least 2 characters long
+            )  # "large_text" length must be at least 2 characters long
+            if track.album
+            else None,
             start=start_time,
             end=end_time,
         )

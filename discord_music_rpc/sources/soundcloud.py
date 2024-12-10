@@ -1,25 +1,25 @@
 import datetime
+
 from soundcloud import SoundCloud
-from . import Track
-from ..config import Config
+
 from .. import logger
+from . import BaseSource, Track
 
 
-class SoundCloudSource:
-    def __init__(self, config: Config):
-        if not config.soundcloud.auth_token:
+class SoundCloudSource(BaseSource):
+    def initialize_client(self):
+        if not self.config.soundcloud.auth_token:
             logger.debug("SoundCloud credentials not configured.")
-            self.sc = None
-            return
-
-        self.sc = SoundCloud(auth_token=config.soundcloud.auth_token)
+            self.client = None
+        else:
+            self.client = SoundCloud(auth_token=self.config.soundcloud.auth_token)
 
     def get_current_track(self) -> Track | None:
-        if not self.sc:
+        if not self.client:
             logger.debug("SoundCloud credentials not configured.")
             return None
 
-        song = next(self.sc.get_my_history())
+        song = next(self.client.get_my_history())
         if not song:
             return None
 
@@ -33,3 +33,5 @@ class SoundCloudSource:
                 image=song.track.artwork_url,
                 source="soundcloud",
             )
+
+        return None

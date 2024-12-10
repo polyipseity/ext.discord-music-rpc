@@ -1,11 +1,9 @@
-from contextlib import contextmanager
-import os
-import yaml
 from pathlib import Path
-from . import utils
+
+import yaml
 from pydantic import BaseModel
 
-from . import logger, CONFIG_DIR
+from . import CONFIG_DIR, logger, utils
 
 CFG_PATH = CONFIG_DIR / "config.yaml"
 
