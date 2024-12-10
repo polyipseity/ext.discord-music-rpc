@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/project/uneq
+      url: https://pypi.org/project/discord-music-rpc
     permissions:
       id-token: write
 
