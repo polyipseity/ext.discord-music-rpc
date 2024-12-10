@@ -41,4 +41,4 @@ check_untyped_defs = true
 allow-direct-references = true # allow git dependencies todo: why do i need to do this
 
 [project.scripts]
-discord-music-rpc = "discord_music_rpc.__main__:main"
+discord-music-rpc = "discord_music_rpc.main:main"

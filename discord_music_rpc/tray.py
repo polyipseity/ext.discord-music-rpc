@@ -53,8 +53,9 @@ def run_tray_icon() -> Icon:
         MenuItem("View Logs", open_logs),
         MenuItem("Quit", on_quit),
     )
+
     icon = Icon("discord-music-rpc", icon_image, menu=menu)
 
-    icon.run_detached()
+    icon.run_detached()  # todo: fix on mac
 
     return icon
