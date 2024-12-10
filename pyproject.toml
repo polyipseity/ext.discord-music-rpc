@@ -16,14 +16,15 @@ dependencies = [
     "spotipy>=2.24.0",
 ]
 
+[project.urls]
+"Homepage" = "https://github.com/f0e/discord-music-rpc"
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.uv]
-dev-dependencies = [
-    "nuitka>=2.5.6",
-]
+dev-dependencies = ["nuitka>=2.5.6"]
 
 [tool.uv.sources]
 pypresence = { url = "https://github.com/qwertyquerty/pypresence/archive/master.zip" }
