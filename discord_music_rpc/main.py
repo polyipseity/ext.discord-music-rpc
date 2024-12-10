@@ -9,6 +9,8 @@ from .sources import MusicSourceManager
 from .tray import run_tray_icon, update_tray
 from .utils import is_same_track
 
+MAIN_SLEEP_SEC = 1
+
 
 def get_config(current_config=None):
     while True:
@@ -60,15 +62,16 @@ def main():
 
                         discord_rpc.update(current_track)
                     else:
+                        if not is_same_track(current_track, last_track):
+                            logger.info("Stopped playing")
+
                         discord_rpc.clear()
 
                     update_tray(icon, current_track)
 
                     last_track = current_track
 
-                    time.sleep(
-                        1
-                    )  # todo: config this? diff services diff sleeps? (ratelimiting)
+                    time.sleep(MAIN_SLEEP_SEC)
             except pypresence.exceptions.PipeClosed:
                 logger.warning("Lost connection to Discord, attempting to reconnect...")
                 time.sleep(1)
@@ -81,6 +84,8 @@ def main():
 
             discord_rpc.close()
             logger.debug("Closed Discord RPC")
+
+            music_sources.stop()
         except Exception as e:
             logger.error(f"Unexpected error in main loop: {e}")
             time.sleep(5)

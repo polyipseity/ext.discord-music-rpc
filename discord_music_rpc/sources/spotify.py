@@ -6,6 +6,10 @@ from . import BaseSource, Track
 
 
 class SpotifySource(BaseSource):
+    @property
+    def source_name(self):
+        return "Spotify"
+
     def initialize_client(self):
         if (
             not self.config.spotify.client_id

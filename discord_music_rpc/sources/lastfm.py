@@ -5,6 +5,10 @@ from . import BaseSource, Track
 
 
 class LastFmSource(BaseSource):
+    @property
+    def source_name(self):
+        return "Last.fm"
+
     def initialize_client(self):
         self.username = self.config.lastfm.username
         self.api_key = self.config.lastfm.api_key

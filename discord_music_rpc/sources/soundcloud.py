@@ -7,6 +7,10 @@ from . import BaseSource, Track
 
 
 class SoundCloudSource(BaseSource):
+    @property
+    def source_name(self):
+        return "SoundCloud"
+
     def initialize_client(self):
         if not self.config.soundcloud.auth_token:
             logger.debug("SoundCloud credentials not configured.")

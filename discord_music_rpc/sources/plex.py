@@ -7,6 +7,10 @@ from . import BaseSource, Track
 
 
 class PlexSource(BaseSource):
+    @property
+    def source_name(self):
+        return "Plex"
+
     def initialize_client(self):
         if not self.config.plex.server_url or not self.config.plex.token:
             logger.debug("Plex credentials not configured.")
