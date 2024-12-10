@@ -8,7 +8,7 @@ dependencies = [
     "pillow>=11.0.0",
     "plexapi>=4.16.0",
     "pydantic>=2.10.3",
-    "pypresence @ git+https://github.com/qwertyquerty/pypresence.git",
+    "pypresence @ git+https://github.com/qwertyquerty/pypresence.git@f856ccaaeb2321f64f9692b75dc3ceda5c927f42",
     "pystray>=0.19.5",
     "pyyaml>=6.0.2",
     "requests>=2.32.3",

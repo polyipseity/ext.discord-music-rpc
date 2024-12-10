@@ -137,7 +137,7 @@ requires-dist = [
     { name = "pillow", specifier = ">=11.0.0" },
     { name = "plexapi", specifier = ">=4.16.0" },
     { name = "pydantic", specifier = ">=2.10.3" },
-    { name = "pypresence", git = "https://github.com/qwertyquerty/pypresence.git" },
+    { name = "pypresence", git = "https://github.com/qwertyquerty/pypresence.git?rev=f856ccaaeb2321f64f9692b75dc3ceda5c927f42#f856ccaaeb2321f64f9692b75dc3ceda5c927f42" },
     { name = "pystray", specifier = ">=0.19.5" },
     { name = "pyyaml", specifier = ">=6.0.2" },
     { name = "requests", specifier = ">=2.32.3" },
@@ -429,7 +429,7 @@ wheels = [
 [[package]]
 name = "pypresence"
 version = "4.3.0"
-source = { git = "https://github.com/qwertyquerty/pypresence.git#f856ccaaeb2321f64f9692b75dc3ceda5c927f42" }
+source = { git = "https://github.com/qwertyquerty/pypresence.git?rev=f856ccaaeb2321f64f9692b75dc3ceda5c927f42#f856ccaaeb2321f64f9692b75dc3ceda5c927f42" }
 
 [[package]]
 name = "pystray"
