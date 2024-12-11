@@ -16,15 +16,19 @@ class SoundCloudSource(BaseSource):
         return "https://d21buns5ku92am.cloudfront.net/26628/images/419679-1x1_SoundCloudLogo_cloudmark-f5912b-large-1645807040.jpg"
 
     def initialize_client(self):
+        self.client = None
+
         if not self.config.soundcloud.auth_token:
-            logger.debug("SoundCloud credentials not configured.")
-            self.client = None
+            logger.debug(f"{self.source_name} credentials not configured.")
         else:
-            self.client = SoundCloud(auth_token=self.config.soundcloud.auth_token)
+            try:
+                self.client = SoundCloud(auth_token=self.config.soundcloud.auth_token)
+            except Exception as e:
+                logger.warning(f"Failed to initialise {self.source_name}: {e}")
 
     def get_current_track(self) -> Track | None:
         if not self.client:
-            logger.debug("SoundCloud credentials not configured.")
+            logger.debug(f"{self.source_name} credentials not configured.")
             return None
 
         song = next(self.client.get_my_history())

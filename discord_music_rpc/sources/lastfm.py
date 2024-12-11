@@ -18,16 +18,16 @@ class LastFmSource(BaseSource):
     def initialize_client(self):
         self.username = self.config.lastfm.username
         self.api_key = self.config.lastfm.api_key
+        self.client = None
 
         if not self.username or not self.api_key:
-            logger.debug("Last.fm credentials not configured.")
-            self.client = None
+            logger.debug(f"{self.source_name} credentials not configured.")
         else:
             self.client = True  # Placeholder to signify initialization success
 
     def get_current_track(self) -> Track | None:
         if not self.client:
-            logger.debug("Last.fm credentials not configured.")
+            logger.debug(f"{self.source_name} credentials not configured.")
             return None
 
         params = {
@@ -60,5 +60,5 @@ class LastFmSource(BaseSource):
                 )
             return None
         except Exception as e:
-            logger.error(f"Error fetching Last.fm track: {e}")
+            logger.error(f"Error fetching {self.source_name} track: {e}")
             return None

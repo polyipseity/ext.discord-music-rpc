@@ -23,14 +23,17 @@ class SpotifySource(BaseSource):
             logger.debug("Spotify credentials not configured.")
             return
 
-        self.client = spotipy.Spotify(
-            auth_manager=SpotifyOAuth(
-                client_id=self.config.spotify.client_id,
-                client_secret=self.config.spotify.client_secret,
-                redirect_uri=self.config.spotify.redirect_uri,
-                scope="user-read-currently-playing user-read-playback-state",
+        try:
+            self.client = spotipy.Spotify(
+                auth_manager=SpotifyOAuth(
+                    client_id=self.config.spotify.client_id,
+                    client_secret=self.config.spotify.client_secret,
+                    redirect_uri=self.config.spotify.redirect_uri,
+                    scope="user-read-currently-playing user-read-playback-state",
+                )
             )
-        )
+        except Exception as e:
+            logger.warning(f"Failed to initialise {self.source_name}: {e}")
 
     def get_current_track(self):
         if not self.client:

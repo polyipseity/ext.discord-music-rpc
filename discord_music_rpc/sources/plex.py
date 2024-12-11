@@ -16,17 +16,21 @@ class PlexSource(BaseSource):
         return "https://www.plex.tv/wp-content/uploads/2022/09/plexamp-app-icon.png"
 
     def initialize_client(self):
+        self.client = None
+
         if not self.config.plex.server_url or not self.config.plex.token:
-            logger.debug("Plex credentials not configured.")
-            self.client = None
+            logger.debug(f"{self.source_name} credentials not configured.")
         else:
-            self.client = PlexServer(
-                self.config.plex.server_url, self.config.plex.token
-            )
+            try:
+                self.client = PlexServer(
+                    self.config.plex.server_url, self.config.plex.token
+                )
+            except Exception as e:
+                logger.warning(f"Failed to initialise {self.source_name}: {e}")
 
     def get_current_track(self) -> Track | None:
         if not self.client:
-            logger.debug("Plex credentials not configured.")
+            logger.debug(f"{self.source_name} credentials not configured.")
             return None
 
         for session in self.client.sessions():
