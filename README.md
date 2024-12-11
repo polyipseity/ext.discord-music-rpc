@@ -1,7 +1,7 @@
 # Discord Music RPC
 
 <p align="center">
-  <img alt="preview" src="./assets/preview.webp">
+  <img alt="preview" src="./assets/preview.webp" height=120>
 </p>
 
 ## supported services
