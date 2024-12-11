@@ -62,7 +62,7 @@ class GracefulKiller:
         signal.signal(signal.SIGTERM, self.exit_gracefully)
 
     def exit_gracefully(self, signum=None, frame=None):
-        print(f"\nReceived exit signal {signum}. Shutting down...")
+        logger.info(f"Received exit signal {signum}. Shutting down...")
         self.kill_now = True
 
 
