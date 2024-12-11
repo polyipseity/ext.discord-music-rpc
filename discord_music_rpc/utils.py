@@ -1,9 +1,11 @@
 import yaml
 
-from .sources import Track
+from .sources import TrackWithSource
 
 
-def is_same_track(track1: Track | None, track2: Track | None) -> bool:
+def is_same_track(
+    track1: TrackWithSource | None, track2: TrackWithSource | None
+) -> bool:
     if not track1 and not track2:
         return True
 
@@ -11,9 +13,9 @@ def is_same_track(track1: Track | None, track2: Track | None) -> bool:
         return False
 
     return (
-        track1.name == track2.name
-        and track1.artist == track2.artist
-        and track1.album == track2.album
+        track1.track.name == track2.track.name
+        and track1.track.artist == track2.track.artist
+        and track1.track.album == track2.track.album
         and track1.source == track2.source
     )
 

@@ -10,6 +10,10 @@ class SpotifySource(BaseSource):
     def source_name(self):
         return "Spotify"
 
+    @property
+    def source_image(self):
+        return "https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Green.png"
+
     def initialize_client(self):
         if (
             not self.config.spotify.client_id
@@ -53,7 +57,6 @@ class SpotifySource(BaseSource):
                 ),
                 progress_ms=current_track["progress_ms"],
                 duration_ms=track["duration_ms"],
-                source="spotify",
             )
         except Exception as e:
             logger.error(f"Error fetching Spotify track: {e}")

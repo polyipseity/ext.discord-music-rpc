@@ -11,6 +11,10 @@ class PlexSource(BaseSource):
     def source_name(self):
         return "Plex"
 
+    @property
+    def source_image(self):
+        return "https://www.plex.tv/wp-content/uploads/2022/09/plexamp-app-icon.png"
+
     def initialize_client(self):
         if not self.config.plex.server_url or not self.config.plex.token:
             logger.debug("Plex credentials not configured.")
@@ -41,7 +45,6 @@ class PlexSource(BaseSource):
                 image=None,  # Placeholder for thumbnail logic
                 progress_ms=track.viewOffset,
                 duration_ms=track.duration,
-                source="plex",
             )
 
         return None

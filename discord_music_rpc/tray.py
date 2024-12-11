@@ -6,6 +6,7 @@ from PIL import Image
 from pystray import Icon, Menu, MenuItem
 
 from . import LOG_DIR, killer
+from .sources import TrackWithSource
 
 
 def on_quit(icon, item):
@@ -25,7 +26,7 @@ def open_logs(icon, item):
             subprocess.call(("xdg-open", log_file))
 
 
-def update_tray(icon, track):
+def update_tray(icon, track: TrackWithSource | None):
     menu_items = [
         MenuItem("Discord Music RPC", lambda icon, item: None, enabled=False),
         MenuItem("View Logs", open_logs),
@@ -36,7 +37,9 @@ def update_tray(icon, track):
         menu_items.insert(
             1,
             MenuItem(
-                f"{track.artist} - {track.name}", lambda icon, item: None, enabled=False
+                f"{track.track.artist} - {track.track.name}",
+                lambda icon, item: None,
+                enabled=False,
             ),
         )
 

@@ -57,7 +57,7 @@ def main():
                     if current_track:
                         if not is_same_track(current_track, last_track):
                             logger.info(
-                                f"Now playing: {current_track.artist} - {current_track.name} ({current_track.source})"
+                                f"Now playing: {current_track.track.artist} - {current_track.track.name} ({current_track.source})"
                             )
 
                         discord_rpc.update(current_track)

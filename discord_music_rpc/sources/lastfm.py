@@ -9,6 +9,12 @@ class LastFmSource(BaseSource):
     def source_name(self):
         return "Last.fm"
 
+    @property
+    def source_image(self):
+        return (
+            "https://www.last.fm/static/images/lastfm_avatar_twitter.52a5d69a85ac.png"
+        )
+
     def initialize_client(self):
         self.username = self.config.lastfm.username
         self.api_key = self.config.lastfm.api_key
@@ -51,7 +57,6 @@ class LastFmSource(BaseSource):
                         ),
                         None,
                     ),
-                    source="lastfm",
                 )
             return None
         except Exception as e:

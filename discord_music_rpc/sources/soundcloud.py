@@ -11,6 +11,10 @@ class SoundCloudSource(BaseSource):
     def source_name(self):
         return "SoundCloud"
 
+    @property
+    def source_image(self):
+        return "https://d21buns5ku92am.cloudfront.net/26628/images/419679-1x1_SoundCloudLogo_cloudmark-f5912b-large-1645807040.jpg"
+
     def initialize_client(self):
         if not self.config.soundcloud.auth_token:
             logger.debug("SoundCloud credentials not configured.")
@@ -35,7 +39,6 @@ class SoundCloudSource(BaseSource):
                 artist=song.track.user.username,
                 url=song.track.permalink_url,
                 image=song.track.artwork_url,
-                source="soundcloud",
             )
 
         return None

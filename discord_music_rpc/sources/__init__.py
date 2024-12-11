@@ -3,7 +3,6 @@ import threading
 import time
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Literal
 
 from .. import logger
 
@@ -14,12 +13,18 @@ ERROR_GAP = 5
 class Track:
     name: str
     artist: str
-    source: Literal["spotify", "lastfm", "soundcloud", "plex"]
     album: str | None = None
     url: str | None = None
     image: str | None = None
     progress_ms: int | None = None
     duration_ms: int | None = None
+
+
+@dataclass
+class TrackWithSource:
+    track: Track
+    source: str
+    source_image: str
 
 
 class BaseSource(ABC):
@@ -43,6 +48,14 @@ class BaseSource(ABC):
         """
         pass
 
+    @property
+    @abstractmethod
+    def source_image(self) -> str:
+        """
+        Image URL of the source's logo.
+        """
+        pass
+
     @abstractmethod
     def initialize_client(self):
         """
@@ -51,7 +64,7 @@ class BaseSource(ABC):
         pass
 
     @abstractmethod
-    def get_current_track(self):
+    def get_current_track(self) -> Track | None:
         """
         Retrieve the currently playing track.
         Returns a Track object or None if no track is playing.
@@ -95,7 +108,7 @@ class MusicSourceManager:
         for source in self.sources:
             source.alive = False
 
-    def get_current_track(self) -> Track | None:
+    def get_current_track(self) -> TrackWithSource | None:
         for source in self.sources:
             if not source.track or not source.track_time:
                 continue
@@ -106,6 +119,8 @@ class MusicSourceManager:
             time_diff = datetime.datetime.now() - source.track_time
 
             if time_diff <= update_gap_timedelta:
-                return source.track
+                return TrackWithSource(
+                    source.track, source.source_name, source.source_image
+                )
 
         return None
