@@ -23,10 +23,11 @@
 | macOS                | `~/Library/Application Support/discord-music-rpc` |
 | Linux                | `~/.local/share/discord-music-rpc`                |
 
-- Add services:
+- Enable services:
   - Last.fm - create an API account at <https://www.last.fm/api/account/create> and copy your API key and fill out your username in `config.yaml`
   - Spotify - create an app at <https://developer.spotify.com/dashboard> with a Redirect URI of <http://localhost:8888/callback> and copy the Client ID and Secret into `config.yaml`
   - Plex/Plexamp - [Get an auth token](https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/) and copy it into `config.yaml` along with your server URL
+  - YouTube & SoundCloud - see [install the userscript](#install-the-userscript)
 
 ### install the userscript
 
