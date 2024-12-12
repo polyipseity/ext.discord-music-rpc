@@ -21,8 +21,8 @@ class Track:
     album: str | None = None
     url: str | None = None
     image: str | None = None
-    progress_ms: int | None = None
-    duration_ms: int | None = None
+    progress_ms: float | None = None
+    duration_ms: float | None = None
 
 
 @dataclass
@@ -95,16 +95,21 @@ class MusicSourceManager:
     def __init__(self, config):
         from .lastfm import LastFmSource
         from .plex import PlexSource
-        from .soundcloud import SoundCloudSource
         from .spotify import SpotifySource
 
         # Sources ordered by priority (highest to lowest)
-        self.sources: list[BaseSource] = [
-            SpotifySource(config),  # highest priority (has progress info)
-            PlexSource(config),
-            LastFmSource(config),
-            SoundCloudSource(config),  # lowest priority
-        ]
+        self.sources: list[BaseSource] = []
+
+        if config.spotify.enabled:
+            self.sources.append(
+                SpotifySource(config)
+            )  # highest priority (has progress info)
+
+        if config.plex.enabled:
+            self.sources.append(PlexSource(config))
+
+        if config.lastfm.enabled:
+            self.sources.append(LastFmSource(config))
 
         for source in self.sources:
             threading.Thread(target=source.update_loop, daemon=True).start()
@@ -113,7 +118,9 @@ class MusicSourceManager:
         for source in self.sources:
             source.alive = False
 
-    def get_current_track(self) -> TrackWithSource | None:
+    def get_current_tracks(self) -> list[TrackWithSource]:
+        tracks: list[TrackWithSource] = []
+
         for source in self.sources:
             if not source.track or not source.track_time:
                 continue
@@ -124,8 +131,10 @@ class MusicSourceManager:
             time_diff = datetime.datetime.now() - source.track_time
 
             if time_diff <= update_gap_timedelta:
-                return TrackWithSource(
-                    source.track, source.source_name, source.source_image
+                tracks.append(
+                    TrackWithSource(
+                        source.track, source.source_name, source.source_image
+                    )
                 )
 
-        return None
+        return tracks

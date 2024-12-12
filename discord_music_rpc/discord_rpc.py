@@ -1,76 +1,132 @@
 import datetime
+from dataclasses import dataclass
 
 from pypresence import ActivityType, Presence
 
-from . import logger
+from . import APP_NAME, PROJECT_URL, logger
 from .config import Config
 from .sources import TrackWithSource
 from .utils import is_same_track
 
+DEFAULT_IMAGE = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/CD_icon_test.svg/240px-CD_icon_test.svg.png"
+
+# todo: move this stuff out of here? into sources? idk for api tho
+client_ids = {
+    "YouTube": "1316777493889286206",
+    "Spotify": "1316777610419634180",
+    "SoundCloud": "1316777669945458789",
+    "Plex": "1316777729508642857",
+    "Last.fm": "1316777803768664076",
+}
+
+activity_type_overrides = {"YouTube": ActivityType.WATCHING}
+
+
+@dataclass
+class RpcWrapper:
+    presence: Presence
+    last_progress: float | None = None
+    last_track: TrackWithSource | None = None
+
 
 class DiscordRichPresence:
     def __init__(self, config: Config):
-        self.client_id = config.discord.client_id
-        self.rpc = Presence(self.client_id)
-
-        self.show_progress = config.discord.show_progress
-        self.show_source = config.discord.show_source
-
-        self.last_track: TrackWithSource | None = None
-        self.last_progress: int | None = None
+        self.config = config.discord
+        self.rpcs = {
+            key: RpcWrapper(Presence(client_id))
+            for key, client_id in client_ids.items()
+        }
 
     def connect(self):
-        self.rpc.connect()
+        for rpc in self.rpcs.values():
+            rpc.presence.connect()
+
         logger.info("Connected to Discord RPC")
 
-    def update(self, track: TrackWithSource | None):
-        if not track:
-            self.clear()
-            return
+    def update(self, tracks: list[TrackWithSource]):
+        for source, rpc in self.rpcs.items():
+            track = next(
+                (t for t in tracks if t.source == source), None
+            )  # todo: dont love this, maybe change input to a dict and stop using lists everywhere
 
-        start_time = None
-        end_time = None
+            if not track:
+                rpc.presence.clear()
+                rpc.last_track = None
+                rpc.last_progress = None
+                continue
 
-        if not is_same_track(track, self.last_track):
-            self.last_progress = None
+            buttons = []
 
-        if track.track.progress_ms is not None and track.track.duration_ms is not None:
+            start_time = None
+            end_time = None
+
+            if self.config.show_urls and track.track.url:
+                buttons.append(
+                    {
+                        "label": f"View track on {track.source}",
+                        "url": track.track.url or "",
+                    }
+                )
+
+            if self.config.show_ad:
+                buttons.append(
+                    {
+                        "label": f"Powered by {APP_NAME}",
+                        "url": PROJECT_URL,
+                    }
+                )
+
+            # handle progress
+            if not is_same_track(track, rpc.last_track):
+                rpc.last_progress = None
+
             if (
-                track.track.progress_ms == self.last_progress
-            ):  # haven't gotten any progress, don't update - discord will handle it
-                return
+                track.track.progress_ms is not None
+                and track.track.duration_ms is not None
+            ):
+                if (
+                    track.track.progress_ms == rpc.last_progress
+                ):  # haven't gotten any progress, don't update - discord will handle it
+                    return
 
-            start_time = (
-                int(datetime.datetime.now().timestamp() * 1000)
-                - track.track.progress_ms
+                start_time = (
+                    int(datetime.datetime.now().timestamp() * 1000)
+                    - track.track.progress_ms
+                )
+                end_time = start_time + track.track.duration_ms
+                rpc.last_progress = track.track.progress_ms
+
+            rpc.presence.update(
+                activity_type=ActivityType.LISTENING
+                if source not in activity_type_overrides
+                else activity_type_overrides[source],
+                buttons=buttons,
+                details=track.track.name.ljust(
+                    2
+                )  # "details" length must be at least 2 characters long
+                if track.track.name
+                else None,
+                state=track.track.artist,
+                large_image=track.track.image or DEFAULT_IMAGE,
+                large_text=track.track.album.ljust(
+                    2
+                )  # "large_text" length must be at least 2 characters long
+                if track.track.album
+                else None,
+                start=start_time if self.config.show_progress else None,
+                end=end_time if self.config.show_progress else None,
+                small_image=track.source_image if self.config.show_source else None,
+                small_text=f"Listening on {track.source}"
+                if self.config.show_source
+                else None,
             )
-            end_time = start_time + track.track.duration_ms
-            self.last_progress = track.track.progress_ms
 
-        self.rpc.update(
-            activity_type=ActivityType.LISTENING,
-            details=track.track.name,
-            state=track.track.artist,
-            large_image=track.track.image,
-            large_text=track.track.album.ljust(
-                2
-            )  # "large_text" length must be at least 2 characters long
-            if track.track.album
-            else None,
-            start=start_time if self.show_progress else None,
-            end=end_time if self.show_progress else None,
-            small_image=track.source_image if self.show_source else None,
-            small_text=f"Listening on {track.source}" if self.show_source else None,
-        )
-
-        self.last_track = track
-
-    def clear(self):
-        self.rpc.clear()
+            rpc.last_track = track
 
     def close(self):
         try:
-            self.clear()
-            self.rpc.close()
+            for rpc in self.rpcs.values():
+                rpc.presence.clear()
+                rpc.presence.close()
         except Exception as e:
             logger.error(e)

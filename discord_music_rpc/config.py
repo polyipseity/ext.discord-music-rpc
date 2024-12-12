@@ -9,45 +9,49 @@ CFG_PATH = CONFIG_DIR / "config.yaml"
 
 
 class DiscordConfig(BaseModel):
-    client_id: str | None = None
     show_progress: bool = True
     show_source: bool = True
+    show_urls: bool = True
+    show_ad: bool = True
 
 
 class SpotifyConfig(BaseModel):
+    enabled: bool = False
     client_id: str | None = None
     client_secret: str | None = None
     redirect_uri: str = "http://localhost:8888/callback"
 
 
 class LastFmConfig(BaseModel):
+    enabled: bool = False
     username: str | None = None
     api_key: str | None = None
-
-
-class SoundCloudConfig(BaseModel):
-    auth_token: str | None = None
+    # todo: skip if already showing in rpc? tricky though because titles might be slightly different
 
 
 class PlexConfig(BaseModel):
+    enabled: bool = False
     server_url: str | None = None
     token: str | None = None
+
+
+class SoundCloudConfig(BaseModel):
+    enabled: bool = False
+
+
+class YouTubeConfig(BaseModel):
+    enabled: bool = False
 
 
 class Config(BaseModel):
     discord: DiscordConfig = DiscordConfig()
     spotify: SpotifyConfig = SpotifyConfig()
     lastfm: LastFmConfig = LastFmConfig()
-    soundcloud: SoundCloudConfig = SoundCloudConfig()
     plex: PlexConfig = PlexConfig()
+    soundcloud: SoundCloudConfig = SoundCloudConfig()
+    youtube: YouTubeConfig = YouTubeConfig()
 
     def validate(self):
-        if not self.discord.client_id:
-            logger.error(
-                f"discord.client_id not configured. Please follow the steps in the README and fill out {CFG_PATH}"
-            )
-            return False
-
         # Spotify configuration checks
         if not self.spotify.client_id:
             logger.info(
@@ -66,11 +70,6 @@ class Config(BaseModel):
         if not self.lastfm.api_key:
             logger.info(
                 "Note: lastfm.api_key not configured. Spotify support will be disabled."
-            )
-
-        if not self.soundcloud.auth_token:
-            logger.info(
-                "Note: soundcloud.auth_token not configured. SoundCloud support will be disabled."
             )
 
         if not self.plex.server_url:

@@ -8,13 +8,14 @@ from .sources import TrackWithSource
 
 
 class Api:
-    current_track: TrackWithSource | None = None
+    current_tracks: dict[ServerConnection, TrackWithSource] = {}
 
-    def __init__(self, host="localhost", port=47474):
+    def __init__(self, tracker, host="localhost", port=47474):
+        self.tracker = tracker
         self.host = host
         self.port = port
         self.clients = set()
-        self.current_track = None
+        self.current_tracks = {}
 
     def handle_client(self, conn: ServerConnection) -> None:
         self.clients.add(conn)
@@ -26,30 +27,44 @@ class Api:
 
                 try:
                     track_json = json.loads(message)
-
                     logger.debug(track_json)
+
+                    config = self.tracker.config
 
                     match track_json["type"]:
                         case "track_update":
-                            if not track_json["data"]:
-                                self.current_track = None
+                            track_data = track_json["data"]
+                            source = track_json["source"]
+                            source_image = track_json["source_image"]
+
+                            source_config = getattr(config, source.lower(), None)
+
+                            if (
+                                not track_data
+                                or not source_config
+                                or not source_config.enabled
+                            ):
+                                del self.current_tracks[conn]
                             else:
-                                self.current_track = TypeAdapter(
+                                validated_track = TypeAdapter(
                                     TrackWithSource
                                 ).validate_python(
                                     {
-                                        "track": track_json["data"],
-                                        "source": track_json["source"],
-                                        "source_image": track_json["source_image"],
+                                        "track": track_data,
+                                        "source": source,
+                                        "source_image": source_image,
                                     }
                                 )
+                                self.current_tracks[conn] = validated_track
 
-                            logger.debug(f"Received track: {self.current_track}")
+                            logger.debug(f"Current tracks: {self.current_tracks}")
+
                 except json.JSONDecodeError:
                     logger.error(f"Invalid JSON received: {message}")
         except Exception as e:
             logger.error(f"Client connection error: {e}")
         finally:
+            del self.current_tracks[conn]
             self.clients.remove(conn)
             conn.close()
             logger.info(f"Client disconnected. Total clients: {len(self.clients)}")
@@ -58,10 +73,9 @@ class Api:
         try:
             with serve(self.handle_client, self.host, self.port) as server:
                 logger.info(f"WebSocket server started on {self.host}:{self.port}")
-                # Block until server is stopped
                 server.serve_forever()
         except Exception as e:
             logger.error(f"Server start error: {e}")
 
-    def get_current_track(self) -> TrackWithSource | None:
-        return self.current_track
+    def get_current_tracks(self) -> list[TrackWithSource]:
+        return list(self.current_tracks.values())

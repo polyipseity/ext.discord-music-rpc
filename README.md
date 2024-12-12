@@ -8,8 +8,10 @@
 
 - Spotify
 - Plex/Plexamp (cover art not currently supported)
-- SoundCloud
 - Last.fm
+- Via userscript
+  - SoundCloud
+  - YouTube
 
 ## setup
 
@@ -21,14 +23,17 @@
 | macOS                | `~/Library/Application Support/discord-music-rpc` |
 | Linux                | `~/.local/share/discord-music-rpc`                |
 
-- Create a Discord application at <https://discord.com/developers/> (the name will be the text displayed in Listening to ...)
-- Copy your Discord app's Application ID into `config.yaml`
-
 - Add services:
   - Last.fm - create an API account at <https://www.last.fm/api/account/create> and copy your API key and fill out your username in `config.yaml`
   - Spotify - create an app at <https://developer.spotify.com/dashboard> with a Redirect URI of <http://localhost:8888/callback> and copy the Client ID and Secret into `config.yaml`
-  - SoundCloud - copy your token from your browser cookies after you've logged in (f12 -> Application -> Cookies -> soundcloud.com -> `oauth_token`) into `config.yaml`
   - Plex/Plexamp - [Get an auth token](https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/) and copy it into `config.yaml` along with your server URL
+
+### install the userscript
+
+To enable YouTube and SoundCloud support, install the helper userscript. To do this:
+
+- Install a userscript manager (I recommend [ViolentMonkey](https://violentmonkey.github.io/))
+- Install the userscript by opening [the source code](https://github.com/f0e/discord-music-rpc/raw/main/extensions/discord-music-rpc-helper.user.js)
 
 ## disclaimer
 

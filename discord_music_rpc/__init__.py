@@ -4,18 +4,19 @@ import signal
 import sys
 from pathlib import Path
 
-app_name = "discord-music-rpc"
+PROJECT_URL = "https://github.com/f0e/discord-music-rpc"
+APP_NAME = "discord-music-rpc"
 
 
 def get_log_directory():
     if sys.platform == "win32":
         log_dir = os.path.join(
-            os.getenv("LOCALAPPDATA", "~/AppData/Local"), app_name, "Logs"
+            os.getenv("LOCALAPPDATA", "~/AppData/Local"), APP_NAME, "Logs"
         )
     elif sys.platform == "darwin":
-        log_dir = os.path.join(os.path.expanduser("~/Library/Logs"), app_name)
+        log_dir = os.path.join(os.path.expanduser("~/Library/Logs"), APP_NAME)
     else:
-        log_dir = os.path.join(os.path.expanduser("~/.local/share"), app_name, "logs")
+        log_dir = os.path.join(os.path.expanduser("~/.local/share"), APP_NAME, "logs")
 
     os.makedirs(log_dir, exist_ok=True)
     return Path(log_dir).expanduser()
@@ -23,13 +24,13 @@ def get_log_directory():
 
 def get_config_dir():
     if sys.platform.startswith("win"):
-        data_path = os.path.join(os.getenv("LOCALAPPDATA", "~/AppData/Local"), app_name)
+        data_path = os.path.join(os.getenv("LOCALAPPDATA", "~/AppData/Local"), APP_NAME)
     elif sys.platform.startswith("darwin"):
         data_path = os.path.join(
-            os.path.expanduser("~/Library/Application Support"), app_name
+            os.path.expanduser("~/Library/Application Support"), APP_NAME
         )
     else:
-        data_path = os.path.join(os.path.expanduser("~/.local/share"), app_name)
+        data_path = os.path.join(os.path.expanduser("~/.local/share"), APP_NAME)
 
     if data_path is None:
         exit()
