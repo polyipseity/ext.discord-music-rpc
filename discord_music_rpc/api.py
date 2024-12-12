@@ -46,7 +46,7 @@ class Api:
                                 or not source_config
                                 or not source_config.enabled
                             ):
-                                del self.current_tracks[conn]
+                                self.current_tracks.pop(conn, None)
                             else:
                                 validated_track = TypeAdapter(
                                     TrackWithSource
@@ -66,7 +66,7 @@ class Api:
         except Exception as e:
             logger.error(f"Client connection error: {e}")
         finally:
-            del self.current_tracks[conn]
+            self.current_tracks.pop(conn, None)
             self.clients.remove(conn)
             conn.close()
             logger.info(f"Client disconnected. Total clients: {len(self.clients)}")
