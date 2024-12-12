@@ -2,9 +2,9 @@
 // @name        discord-music-rpc helper
 // @namespace   https://github.com/f0e
 // @author      f0e
-// @version     1.0
+// @version     1.01
 // @match       *://*.soundcloud.com/*
-// @match       *://*.youtube.com/watch?v=*
+// @match       *://*.youtube.com/*
 // @grant       none
 // @updateURL   https://github.com/f0e/discord-music-rpc/raw/main/extensions/discord-music-rpc-helper.user.js
 // @downloadURL https://github.com/f0e/discord-music-rpc/raw/main/extensions/discord-music-rpc-helper.user.js
