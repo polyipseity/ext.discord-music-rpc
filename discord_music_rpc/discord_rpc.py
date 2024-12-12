@@ -89,7 +89,7 @@ class DiscordRichPresence:
                 if (
                     track.track.progress_ms == rpc.last_progress
                 ):  # haven't gotten any progress, don't update - discord will handle it
-                    return
+                    continue
 
                 start_time = (
                     int(datetime.datetime.now().timestamp() * 1000)
