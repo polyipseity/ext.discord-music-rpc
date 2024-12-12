@@ -31,7 +31,7 @@ class RpcWrapper:
 
 class DiscordRichPresence:
     def __init__(self, config: Config):
-        self.config = config.discord
+        self.config = config
         self.rpcs = {
             key: RpcWrapper(Presence(client_id))
             for key, client_id in client_ids.items()
@@ -45,11 +45,13 @@ class DiscordRichPresence:
 
     def update(self, tracks: list[TrackWithSource]):
         for source, rpc in self.rpcs.items():
+            source_config = self.config.for_source(source)
+
             track = next(
                 (t for t in tracks if t.source == source), None
             )  # todo: dont love this, maybe change input to a dict and stop using lists everywhere
 
-            if not track:
+            if not source_config.enabled or not track:
                 rpc.presence.clear()
                 rpc.last_track = None
                 rpc.last_progress = None
@@ -60,7 +62,7 @@ class DiscordRichPresence:
             start_time = None
             end_time = None
 
-            if self.config.show_urls and track.track.url:
+            if self.config.discord.show_urls and track.track.url:
                 buttons.append(
                     {
                         "label": f"View track on {track.source}",
@@ -68,7 +70,7 @@ class DiscordRichPresence:
                     }
                 )
 
-            if self.config.show_ad:
+            if self.config.discord.show_ad:
                 buttons.append(
                     {
                         "label": f"Powered by {APP_NAME}",
@@ -113,11 +115,13 @@ class DiscordRichPresence:
                 )  # "large_text" length must be at least 2 characters long
                 if track.track.album
                 else None,
-                start=start_time if self.config.show_progress else None,
-                end=end_time if self.config.show_progress else None,
-                small_image=track.source_image if self.config.show_source else None,
+                start=start_time if self.config.discord.show_progress else None,
+                end=end_time if self.config.discord.show_progress else None,
+                small_image=track.source_image
+                if self.config.discord.show_source
+                else None,
                 small_text=f"Listening on {track.source}"
-                if self.config.show_source
+                if self.config.discord.show_source
                 else None,
             )
 

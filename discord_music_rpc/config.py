@@ -84,6 +84,13 @@ class Config(BaseModel):
         # todo return false if nothings enabled? idk
         return True
 
+    def for_source(self, source: str):
+        return getattr(
+            self,
+            source.lower().replace(".", ""),  # todo: hacky and gross but whatever
+            None,
+        )
+
     def dump(self):
         return self.model_dump()
 

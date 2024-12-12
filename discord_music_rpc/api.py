@@ -37,8 +37,8 @@ class Api:
                             source = track_json["source"]
                             source_image = track_json["source_image"]
 
-                            source_config = getattr(
-                                config, source.lower(), None
+                            source_config = config.for_source(
+                                source
                             )  # todo: send config on connection and config change to clients so they dont send the data in the first place. doesnt really matter but would be nice
 
                             if (
