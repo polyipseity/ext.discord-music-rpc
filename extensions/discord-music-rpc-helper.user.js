@@ -2,7 +2,7 @@
 // @name        discord-music-rpc helper
 // @namespace   https://github.com/f0e
 // @author      f0e
-// @version     1.01
+// @version     1.02
 // @match       *://*.soundcloud.com/*
 // @match       *://*.youtube.com/*
 // @grant       none
@@ -15,6 +15,7 @@
 
 const WEBSOCKET_URL = "ws://localhost:47474"; // note: brave shields block local websockets.. -_-
 const VERSION = 1;
+const UPDATE_GAP_SECS = 1;
 
 const PLATFORM_LOGOS = {
   SoundCloud:
@@ -341,7 +342,7 @@ async function run() {
   let lastTrackInfo = null;
 
   while (true) {
-    if (!first) await sleep(1000);
+    if (!first) await sleep(UPDATE_GAP_SECS * 1000);
     else first = false;
 
     const trackInfo = connector.getTrackInfo();
