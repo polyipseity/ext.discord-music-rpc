@@ -2,7 +2,12 @@ import datetime
 import threading
 import time
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from dataclasses import dataclass
+else:
+    from pydantic.dataclasses import dataclass
 
 from .. import logger
 

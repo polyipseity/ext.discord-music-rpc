@@ -11,7 +11,7 @@ CFG_PATH = CONFIG_DIR / "config.yaml"
 class DiscordConfig(BaseModel):
     client_id: str | None = None
     show_progress: bool = True
-    show_source: bool = False
+    show_source: bool = True
 
 
 class SpotifyConfig(BaseModel):

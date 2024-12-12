@@ -1,8 +1,10 @@
+import threading
 import time
 
 import pypresence
 
 from . import killer, logger
+from .api import Api
 from .config import load_config
 from .discord_rpc import DiscordRichPresence
 from .sources import MusicSourceManager
@@ -28,6 +30,9 @@ def get_config(current_config=None):
 
 
 def main():
+    api = Api()
+    threading.Thread(target=api.start, daemon=True).start()
+
     icon = run_tray_icon()
 
     config = None
@@ -52,7 +57,9 @@ def main():
                         logger.info("Config updated, reloading")
                         break
 
-                    current_track = music_sources.get_current_track()
+                    current_track = (
+                        api.get_current_track() or music_sources.get_current_track()
+                    )
 
                     if current_track:
                         if not is_same_track(current_track, last_track):
