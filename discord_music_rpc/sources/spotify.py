@@ -1,8 +1,11 @@
+import logging
+
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
-from .. import logger
 from . import BaseSource, Track
+
+logger = logging.getLogger(__name__)
 
 
 class SpotifySource(BaseSource):

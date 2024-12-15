@@ -1,4 +1,5 @@
 import datetime
+import logging
 import threading
 import time
 from abc import ABC, abstractmethod
@@ -9,7 +10,7 @@ if TYPE_CHECKING:
 else:
     from pydantic.dataclasses import dataclass
 
-from .. import logger
+logger = logging.getLogger(__name__)
 
 ERROR_GAP = 5
 

@@ -1,12 +1,15 @@
 import datetime
+import logging
 from dataclasses import dataclass
 
 from pypresence import ActivityType, Presence
 
-from . import APP_NAME, PROJECT_URL, logger
+from . import APP_NAME, PROJECT_URL
 from .config import Config
 from .sources import TrackWithSource
 from .utils import is_same_track
+
+logger = logging.getLogger(__name__)
 
 DEFAULT_IMAGE = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/CD_icon_test.svg/240px-CD_icon_test.svg.png"
 

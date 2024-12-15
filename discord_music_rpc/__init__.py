@@ -4,6 +4,8 @@ import signal
 import sys
 from pathlib import Path
 
+from rich.logging import RichHandler
+
 PROJECT_URL = "https://github.com/f0e/discord-music-rpc"
 APP_NAME = "discord-music-rpc"
 
@@ -42,12 +44,15 @@ def get_config_dir():
 LOG_DIR = get_log_directory()
 os.makedirs(LOG_DIR, exist_ok=True)
 
+FORMAT = "%(message)s"
+
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    format=FORMAT,
+    datefmt="[%X]",
     handlers=[
         logging.FileHandler(os.path.join(LOG_DIR, "app.log")),
-        logging.StreamHandler(),  # Also log to console
+        RichHandler(rich_tracebacks=True),
     ],
 )
 

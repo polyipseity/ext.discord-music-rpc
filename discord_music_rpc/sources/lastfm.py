@@ -1,7 +1,10 @@
+import logging
+
 import requests
 
-from .. import logger
 from . import BaseSource, Track
+
+logger = logging.getLogger(__name__)
 
 
 class LastFmSource(BaseSource):

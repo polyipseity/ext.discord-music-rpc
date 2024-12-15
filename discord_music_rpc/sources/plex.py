@@ -1,9 +1,12 @@
+import logging
+
 from plexapi.audio import Album, Artist
 from plexapi.audio import Track as PlexTrack
 from plexapi.server import PlexServer
 
-from .. import logger
 from . import BaseSource, Track
+
+logger = logging.getLogger(__name__)
 
 
 class PlexSource(BaseSource):
@@ -36,6 +39,8 @@ class PlexSource(BaseSource):
         for session in self.client.sessions():
             if session.type != "track":
                 continue
+
+            # todo: config only allow certain libraries
 
             track: PlexTrack = session
             artist: Artist = track.artist()

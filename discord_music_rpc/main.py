@@ -1,14 +1,17 @@
+import logging
 import threading
 import time
 
 import pypresence
 
-from . import killer, logger
+from . import killer
 from .api import Api
 from .config import load_config
 from .discord_rpc import DiscordRichPresence
 from .sources import MusicSourceManager
 from .tray import run_tray_icon
+
+logger = logging.getLogger(__name__)
 
 
 class MusicTracker:

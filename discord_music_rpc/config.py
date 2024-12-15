@@ -1,9 +1,12 @@
+import logging
 from pathlib import Path
 
 import yaml
 from pydantic import BaseModel
 
-from . import CONFIG_DIR, logger, utils
+from . import CONFIG_DIR, utils
+
+logger = logging.getLogger(__name__)
 
 CFG_PATH = CONFIG_DIR / "config.yaml"
 

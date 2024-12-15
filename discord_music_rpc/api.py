@@ -1,10 +1,12 @@
 import json
+import logging
 
 from pydantic import TypeAdapter
 from websockets.sync.server import ServerConnection, serve
 
-from . import logger
 from .sources import TrackWithSource
+
+logger = logging.getLogger(__name__)
 
 
 class Api:
