@@ -4,6 +4,7 @@ from plexapi.audio import Album, Artist
 from plexapi.audio import Track as PlexTrack
 from plexapi.server import PlexServer
 
+from ..meta_sources.lastfm import get_lastfm_cover_art
 from . import BaseSource, Track
 
 logger = logging.getLogger(__name__)
@@ -40,18 +41,29 @@ class PlexSource(BaseSource):
             if session.type != "track":
                 continue
 
-            # todo: config only allow certain libraries
+            if (
+                not session.player.state == "playing"
+            ):  # idk if theres an easier way to do this
+                continue
 
             track: PlexTrack = session
+
+            if track.librarySectionTitle not in self.config.plex.libraries:
+                continue
+
             artist: Artist = track.artist()
             album: Album = track.album()
+
+            image = get_lastfm_cover_art(
+                track.title, artist.title, album.title, self.config.lastfm.api_key
+            )
 
             return Track(
                 name=track.title,
                 artist=artist.title,
                 album=album.title,
-                url=None,
-                image=None,  # Placeholder for thumbnail logic
+                url=None,  # todo: lastfm url?
+                image=image,
                 progress_ms=track.viewOffset,
                 duration_ms=track.duration,
             )

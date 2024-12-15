@@ -121,10 +121,10 @@ class DiscordRichPresence:
                 start=start_time if self.config.discord.show_progress else None,
                 end=end_time if self.config.discord.show_progress else None,
                 small_image=track.source_image
-                if self.config.discord.show_source
+                if self.config.discord.show_source_logo
                 else None,
                 small_text=f"Listening on {track.source}"
-                if self.config.discord.show_source
+                if self.config.discord.show_source_logo
                 else None,
             )
 

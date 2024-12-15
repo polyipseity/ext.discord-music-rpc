@@ -34,6 +34,9 @@ class TrackWithSource:
 
 
 class BaseSource(ABC):
+    from discord_music_rpc.config import Config
+
+    config: Config
     alive: bool = True
     track: Track | None = None
     track_time: datetime.datetime | None = None

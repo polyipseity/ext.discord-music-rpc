@@ -13,7 +13,7 @@ CFG_PATH = CONFIG_DIR / "config.yaml"
 
 class DiscordConfig(BaseModel):
     show_progress: bool = True
-    show_source: bool = True
+    show_source_logo: bool = True
     show_urls: bool = True
     show_ad: bool = True
 
@@ -36,6 +36,7 @@ class PlexConfig(BaseModel):
     enabled: bool = False
     server_url: str | None = None
     token: str | None = None
+    libraries: list[str] = []
 
 
 class SoundCloudConfig(BaseModel):

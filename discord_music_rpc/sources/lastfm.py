@@ -43,6 +43,8 @@ class LastFmSource(BaseSource):
 
         try:
             response = requests.get("https://ws.audioscrobbler.com/2.0/", params=params)
+            response.raise_for_status()
+
             data = response.json()
 
             track = data["recenttracks"]["track"][0]
