@@ -2,7 +2,7 @@
 // @name        discord-music-rpc helper
 // @namespace   https://github.com/f0e
 // @author      f0e
-// @version     1.02
+// @version     1.03
 // @match       *://*.soundcloud.com/*
 // @match       *://*.youtube.com/*
 // @grant       none
@@ -121,8 +121,7 @@ class SoundCloudConnector extends MusicPlatformConnector {
       ".playControls__soundBadge span.sc-artwork",
       "[class*=MiniPlayer_MiniPlayerArtworkImage]",
     ],
-    currentTime: ".playbackTimeline__timePassed > span:nth-child(2)",
-    duration: ".playbackTimeline__duration > span:nth-child(2)",
+    progress: ".playbackTimeline__progressWrapper[role='progressbar']",
     playControl: ".playControls .playControl",
     miniplayerPause:
       '[class*=IconButton_Medium][data-testid="miniplayer-pause"]',
@@ -160,18 +159,17 @@ class SoundCloudConnector extends MusicPlatformConnector {
   }
 
   getCurrentTimeAndDuration() {
-    const currentTimeEl = document.querySelector(this.SELECTORS.currentTime);
-    const durationEl = document.querySelector(this.SELECTORS.duration);
+    const progressWrapper = document.querySelector(this.SELECTORS.progress);
+    if (!progressWrapper) return { currentTime: 0, duration: 0 };
 
-    const parseTime = (timeStr) => {
-      if (!timeStr) return 0;
-      const [minutes, seconds] = timeStr.split(":").map(Number);
-      return minutes * 60 + seconds;
-    };
+    const currentTime =
+      parseInt(progressWrapper.getAttribute("aria-valuenow")) || 0;
+    const duration =
+      parseInt(progressWrapper.getAttribute("aria-valuemax")) || 0;
 
     return {
-      currentTime: parseTime(currentTimeEl?.textContent?.trim()),
-      duration: parseTime(durationEl?.textContent?.trim()),
+      currentTime,
+      duration,
     };
   }
 
