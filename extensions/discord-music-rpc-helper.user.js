@@ -20,7 +20,7 @@ const VERSION = 1;
 const UPDATE_GAP_SECS = 1;
 
 const PLATFORM_LOGOS = {
-  Ampcast: "https://ampcast.app/favicon.svg",
+  Ampcast: "https://ampcast.app/apple-touch-icon.png",
   SoundCloud:
     "https://d21buns5ku92am.cloudfront.net/26628/images/419679-1x1_SoundCloudLogo_cloudmark-f5912b-large-1645807040.jpg",
   YouTube: "https://music.youtube.com/img/cairo/favicon_144.png",
