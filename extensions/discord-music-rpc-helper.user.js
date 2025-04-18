@@ -162,7 +162,17 @@ class AmpcastConnector extends MusicPlatformConnector {
       uniqueID = videoID ? `https://youtu.be/${videoID}` : uniqueID;
     }
 
-    const coverArt = dialog.querySelector("img.cover-art-image")?.src ?? null;
+    let coverArt = dialog.querySelector("img.cover-art-image")?.src ?? null;
+    if (coverArt !== null) {
+      const url = new URL(coverArt);
+      if (url.hostname.endsWith("ytimg.com")) {
+        const pathComps = url.pathname.split("/");
+        if (pathComps.pop() !== void 0)
+          pathComps.push("mqdefault.jpg");
+        url.pathname = pathComps.join("/");
+        coverArt = url.href;
+      }
+    }
 
     const externalLinkEls = dialog.querySelectorAll("a.external-link, a.external");
     for (const externalLinkEl of externalLinkEls) {
