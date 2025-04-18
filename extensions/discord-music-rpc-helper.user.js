@@ -1,8 +1,10 @@
 // ==UserScript==
 // @name        discord-music-rpc helper
+// @description
 // @namespace   https://github.com/f0e
 // @author      f0e
-// @version     1.03
+// @version     1.04
+// @match       *://*.ampcast.app/*
 // @match       *://*.soundcloud.com/*
 // @match       *://*.youtube.com/*
 // @grant       none
@@ -18,6 +20,7 @@ const VERSION = 1;
 const UPDATE_GAP_SECS = 1;
 
 const PLATFORM_LOGOS = {
+  Ampcast: "https://ampcast.app/favicon.svg",
   SoundCloud:
     "https://d21buns5ku92am.cloudfront.net/26628/images/419679-1x1_SoundCloudLogo_cloudmark-f5912b-large-1645807040.jpg",
   YouTube: "https://music.youtube.com/img/cairo/favicon_144.png",
@@ -25,9 +28,9 @@ const PLATFORM_LOGOS = {
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const getTextFromSelectors = (selectors) => {
+const getTextFromSelectors = (selectors, root = document) => {
   for (const selector of selectors) {
-    const element = document.querySelector(selector);
+    const element = root.querySelector(selector);
     if (element) return element.textContent.trim();
   }
   return null;
@@ -45,49 +48,188 @@ class MusicPlatformConnector {
     this.sourceImage = null;
   }
 
-  isPlaying() {
+  async isPlaying() {
     throw new Error("Method 'isPlaying()' must be implemented");
   }
 
-  getArtistTrack() {
+  async getArtistTrack() {
     throw new Error("Method 'getArtistTrack()' must be implemented");
   }
 
-  getCurrentTimeAndDuration() {
+  async getCurrentTimeAndDuration() {
     throw new Error("Method 'getCurrentTimeAndDuration()' must be implemented");
   }
 
-  getUniqueID() {
+  async getUniqueID() {
     return null;
   }
 
-  getTrackArt() {
+  async getTrackArt() {
     return null;
   }
 
-  getTrackInfo() {
-    if (!this.isPlaying()) return null;
+  async getTrackInfo() {
+    if (!await this.isPlaying()) return null;
 
-    const { artist, track } = this.getArtistTrack();
-    const timeInfo = this.getCurrentTimeAndDuration();
+    const { artist, track } = await this.getArtistTrack();
+    const timeInfo = await this.getCurrentTimeAndDuration();
 
     if (!artist || !track) return null;
 
     return {
       name: track,
       artist: artist,
-      url: this.getUniqueID(),
-      image: this.getTrackArt(),
+      url: await this.getUniqueID(),
+      image: await this.getTrackArt(),
       progress_ms: (timeInfo?.currentTime || 0) * 1000,
       duration_ms: (timeInfo?.duration || 0) * 1000,
     };
   }
 
-  getSourceInfo() {
+  async getSourceInfo() {
     return {
       source: this.source,
       sourceImage: this.sourceImage,
     };
+  }
+}
+
+class AmpcastConnector extends MusicPlatformConnector {
+  constructor() {
+    super();
+    this.source = "Ampcast";
+    this.sourceImage = PLATFORM_LOGOS.Ampcast;
+  }
+
+  static matchesPlatform() {
+    const hostname = window.location.hostname;
+    console.log(hostname);
+    return hostname.endsWith("ampcast.app");
+  }
+
+  static FETCH_CACHE = new Map();
+
+  static async fetchCached(url, init = void 0) {
+    let ret = this.FETCH_CACHE.get(url.href);
+    if (!ret || (typeof ret === "number" && Date.now() >= ret + 60000)) {
+      try {
+        ret = await fetch(url, init);
+        ret = await ret.json();
+      } catch (err) {
+        console.debug(err);
+        ret = Date.now();
+      }
+      this.FETCH_CACHE.set(url.href, ret);
+    }
+    return typeof ret === "number" ? null : ret;
+  }
+
+  static NULL_MEDIA_INFO = {
+    title: null,
+    artist: null,
+    uniqueID: null,
+    coverArt: null,
+  };
+
+  static async getMediaInfo() {
+    const infoButton = document.querySelector(".icon-button-info");
+    if (infoButton === null) return this.NULL_MEDIA_INFO;
+
+    const dialog = await new Promise(resolve => {
+      const obs = new MutationObserver((mutations, observer) => {
+        for (const node of mutations.flatMap(mut => [...mut.addedNodes])) {
+          if (node instanceof Element && node.classList.contains("media-info-dialog")) {
+            resolve(node);
+            observer.disconnect();
+            return;
+          }
+        }
+      });
+      obs.observe(document, { childList: true, subtree: true });
+      infoButton.click();
+      window.setTimeout(() => { resolve(null); obs.disconnect(); }, 2000);
+    });
+    if (dialog === null) return this.NULL_MEDIA_INFO;
+
+    let title = getTextFromSelectors([".title"], dialog);
+
+    dialog.querySelector(".artist .by")?.remove();
+    let artist = getTextFromSelectors([".artist"], dialog);
+
+    let uniqueID = dialog.querySelector(".external-view a.external-link").href ?? null;
+    if (uniqueID !== null && uniqueID.includes("youtube.com")) {
+      const videoID = new URL(uniqueID).searchParams.get("v");
+      uniqueID = videoID ? `https://youtu.be/${videoID}` : uniqueID;
+    }
+
+    const coverArt = dialog.querySelector("img.cover-art-image")?.src ?? null;
+
+    const externalLinkEls = dialog.querySelectorAll("a.external-link, a.external");
+    for (const externalLinkEl of externalLinkEls) {
+      if (externalLinkEl.href) {
+        const url = new URL(externalLinkEl.href);
+        if (url.hostname.endsWith("musicbrainz.org")) {
+          url.pathname = `/ws/2${url.pathname}`;
+          url.searchParams.set("fmt", "json");
+          url.searchParams.set("inc", "artists");
+
+          const mbInfo = await this.fetchCached(url, {
+            method: "GET",
+            mode: "cors",
+          });
+          if (mbInfo !== null) {
+            title = mbInfo.title ?? title;
+            artist = (mbInfo["artist-credit"] ?? [])[0]?.name ?? artist;
+          }
+
+          break;
+        }
+      }
+    }
+
+    dialog.querySelector(".dialog-close")?.click();
+    return { title, artist, uniqueID, coverArt };
+  }
+
+  isPlaying() {
+    return document.querySelector(".media-button-pause") !== null;
+  }
+
+  async getArtistTrack() {
+    const { title, artist } = await this.constructor.getMediaInfo();
+    return { track: title, artist };
+  }
+
+  getCurrentTimeAndDuration() {
+    const videoElement = document.querySelector("input#playhead");
+    if (!videoElement) return null;
+    return {
+      currentTime: videoElement.value,
+      duration: videoElement.max,
+    };
+  }
+
+  async getUniqueID() {
+    const { uniqueID } = await this.constructor.getMediaInfo();
+    return uniqueID;
+  }
+
+  async getTrackArt() {
+    const { coverArt } = await this.constructor.getMediaInfo();
+    return coverArt;
+  }
+
+  async getSourceInfo() {
+    const ret = await super.getSourceInfo();
+    const { uniqueID } = await this.constructor.getMediaInfo();
+    if (uniqueID !== null) {
+      const url = new URL(uniqueID);
+      if (url.hostname.endsWith("soundcloud.com"))
+        ret.source = "SoundCloud";
+      else if (url.hostname.endsWith("youtu.be"))
+        ret.source = "YouTube";
+    }
+    return ret;
   }
 }
 
@@ -324,7 +466,7 @@ class ApiConnector {
 }
 
 async function run() {
-  const PLATFORM_CONNECTORS = [SoundCloudConnector, YouTubeConnector];
+  const PLATFORM_CONNECTORS = [AmpcastConnector, SoundCloudConnector, YouTubeConnector];
 
   const PlatformConnectorClass = PLATFORM_CONNECTORS.find((connector) =>
     connector.matchesPlatform()
@@ -343,10 +485,10 @@ async function run() {
     if (!first) await sleep(UPDATE_GAP_SECS * 1000);
     else first = false;
 
-    const trackInfo = connector.getTrackInfo();
+    const trackInfo = await connector.getTrackInfo();
 
     if (JSON.stringify(lastTrackInfo) !== JSON.stringify(trackInfo)) {
-      scrobbler.sendTrackInfo(trackInfo, connector.getSourceInfo());
+      scrobbler.sendTrackInfo(trackInfo, await connector.getSourceInfo());
       lastTrackInfo = trackInfo;
     }
   }
