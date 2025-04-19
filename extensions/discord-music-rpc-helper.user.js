@@ -108,7 +108,6 @@ class AmpcastConnector extends MusicPlatformConnector {
   }
 
   static FETCH_CACHE = new Map();
-
   static async fetchCached(url, init = void 0) {
     let ret = this.FETCH_CACHE.get(url.href);
     if (!ret || (typeof ret === "number" && Date.now() >= ret + 60000)) {
@@ -130,7 +129,6 @@ class AmpcastConnector extends MusicPlatformConnector {
     uniqueID: null,
     coverArt: null,
   };
-
   static async getMediaInfo() {
     const infoButton = document.querySelector(".icon-button-info");
     if (infoButton === null) return this.NULL_MEDIA_INFO;
@@ -201,12 +199,21 @@ class AmpcastConnector extends MusicPlatformConnector {
     return { title, artist, uniqueID, coverArt };
   }
 
+  static MEDIA_INFO_CACHE = null;
+  static async getMediaInfoCached() {
+    let ret = this.MEDIA_INFO_CACHE;
+    if (ret !== null) return ret;
+    this.MEDIA_INFO_CACHE = ret = await this.getMediaInfo();
+    setTimeout(() => { this.MEDIA_INFO_CACHE = null; }, 1000);
+    return ret;
+  }
+
   isPlaying() {
     return document.querySelector(".media-button-pause") !== null;
   }
 
   async getArtistTrack() {
-    const { title, artist } = await this.constructor.getMediaInfo();
+    const { title, artist } = await this.constructor.getMediaInfoCached();
     return { track: title, artist };
   }
 
@@ -220,18 +227,18 @@ class AmpcastConnector extends MusicPlatformConnector {
   }
 
   async getUniqueID() {
-    const { uniqueID } = await this.constructor.getMediaInfo();
+    const { uniqueID } = await this.constructor.getMediaInfoCached();
     return uniqueID;
   }
 
   async getTrackArt() {
-    const { coverArt } = await this.constructor.getMediaInfo();
+    const { coverArt } = await this.constructor.getMediaInfoCached();
     return coverArt;
   }
 
   async getSourceInfo() {
     const ret = await super.getSourceInfo();
-    const { uniqueID } = await this.constructor.getMediaInfo();
+    const { uniqueID } = await this.constructor.getMediaInfoCached();
     if (uniqueID !== null) {
       const url = new URL(uniqueID);
       if (url.hostname.endsWith("soundcloud.com"))
