@@ -2,6 +2,7 @@ import json
 import logging
 
 from pydantic import TypeAdapter
+from websockets import ConnectionClosedOK
 from websockets.sync.server import ServerConnection, serve
 
 from .sources import TrackWithSource
@@ -65,6 +66,8 @@ class Api:
 
                 except json.JSONDecodeError:
                     logger.error(f"Invalid JSON received: {message}")
+        except ConnectionClosedOK:
+            pass
         except Exception as e:
             logger.error(f"Client connection error: {e}")
         finally:
