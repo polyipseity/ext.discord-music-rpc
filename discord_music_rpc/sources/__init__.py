@@ -106,7 +106,7 @@ class MusicSourceManager:
 
         if config.spotify.enabled:
             self.sources.append(
-                SpotifySource(config)
+                SpotifySource(config, 2)
             )  # highest priority (has progress info)
 
         if config.plex.enabled:
