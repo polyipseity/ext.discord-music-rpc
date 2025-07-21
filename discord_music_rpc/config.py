@@ -69,20 +69,21 @@ class Config(BaseModel):
         # Last.fm configuration checks
         if not self.lastfm.username:
             logger.info(
-                "Note: lastfm.username not configured. Spotify support will be disabled."
+                "Note: lastfm.username not configured. Last.fm support will be disabled."
             )
         if not self.lastfm.api_key:
             logger.info(
-                "Note: lastfm.api_key not configured. Spotify support will be disabled."
+                "Note: lastfm.api_key not configured. Last.fm support will be disabled."
             )
 
+        # Plex configuration checks
         if not self.plex.server_url:
             logger.info(
-                "Note: plex.server_url not configured. SoundCloud support will be disabled."
+                "Note: plex.server_url not configured. Plex support will be disabled."
             )
         if not self.plex.token:
             logger.info(
-                "Note: plex.token not configured. SoundCloud support will be disabled."
+                "Note: plex.token not configured. Plex support will be disabled."
             )
 
         # todo return false if nothings enabled? idk
