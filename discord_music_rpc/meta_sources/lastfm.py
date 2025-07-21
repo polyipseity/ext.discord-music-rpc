@@ -29,7 +29,8 @@ def get_lastfm_cover_art(
             return cached_entry.art_url
 
     if not api_key:
-        raise ValueError("Last.fm API key is required")
+        return None
+        # raise ValueError("Last.fm API key is required")
 
     params = {
         "method": "album.getInfo",
