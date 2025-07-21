@@ -97,7 +97,8 @@ class MusicPlatformConnector {
 class AmpcastConnector extends MusicPlatformConnector {
   constructor() {
     super();
-    this.source = "Ampcast";
+    // Pretend to be YouTube for now...
+    this.source = "YouTube"; // "Ampcast";
     this.sourceImage = PLATFORM_LOGOS.Ampcast;
   }
 
@@ -149,12 +150,28 @@ class AmpcastConnector extends MusicPlatformConnector {
     });
     if (dialog === null) return this.NULL_MEDIA_INFO;
 
-    let title = getTextFromSelectors([".title"], dialog);
+    let details = {};
+    const copyDetailsButton = dialog.querySelector(".copy-button");
+    if (copyDetailsButton !== null) {
+      const writeTextOrig = window.navigator.clipboard.writeText;
+      window.navigator.clipboard.writeText = function (text) {
+        details = JSON.parse(text) ?? {};
+      }
+      try {
+        copyDetailsButton.click();
+      } catch (error) {
+        console.warn("Cannot copy details", error);
+      } finally {
+        window.navigator.clipboard.writeText = writeTextOrig;
+      }
+    }
+
+    let title = details.title ?? getTextFromSelectors([".title"], dialog);
 
     dialog.querySelector(".artist .by")?.remove();
-    let artist = getTextFromSelectors([".artist"], dialog);
+    let artist = details.artists?.[0] ?? getTextFromSelectors([".artist"], dialog);
 
-    let uniqueID = dialog.querySelector(".external-view a.external-link").href ?? null;
+    let uniqueID = details.externalUrl ?? dialog.querySelector(".external-view a.external-link").href ?? null;
     if (uniqueID !== null && uniqueID.includes("youtube.com")) {
       const videoID = new URL(uniqueID).searchParams.get("v");
       uniqueID = videoID ? `https://youtu.be/${videoID}` : uniqueID;
@@ -163,10 +180,13 @@ class AmpcastConnector extends MusicPlatformConnector {
     let coverArt = dialog.querySelector("img.cover-art-image")?.src ?? null;
     if (coverArt !== null) {
       const url = new URL(coverArt);
-      if (url.hostname.endsWith("ytimg.com")) {
+      if (url.hostname.startsWith("192.168.0.")) {
+        coverArt = details.release_mbid === void 0 ? null : `https://coverartarchive.org/release/${details.release_mbid}/front`;
+      } else if (url.hostname.endsWith("ytimg.com")) {
         const pathComps = url.pathname.split("/");
-        if (pathComps.pop() !== void 0)
+        if (pathComps.pop() !== void 0) {
           pathComps.push("mqdefault.jpg");
+        }
         url.pathname = pathComps.join("/");
         coverArt = url.href;
       }
@@ -241,10 +261,11 @@ class AmpcastConnector extends MusicPlatformConnector {
     const { uniqueID } = await this.constructor.getMediaInfoCached();
     if (uniqueID !== null) {
       const url = new URL(uniqueID);
-      if (url.hostname.endsWith("soundcloud.com"))
+      if (url.hostname.endsWith("soundcloud.com")) {
         ret.source = "SoundCloud";
-      else if (url.hostname.endsWith("youtu.be"))
+      } else if (url.hostname.endsWith("youtu.be")) {
         ret.source = "YouTube";
+      }
     }
     return ret;
   }
