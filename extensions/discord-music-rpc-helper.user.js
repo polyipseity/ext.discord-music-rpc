@@ -171,7 +171,7 @@ class AmpcastConnector extends MusicPlatformConnector {
     dialog.querySelector(".artist .by")?.remove();
     let artist = details.artists?.[0] ?? getTextFromSelectors([".artist"], dialog);
 
-    let uniqueID = details.externalUrl ?? dialog.querySelector(".external-view a.external-link").href ?? null;
+    let uniqueID = details.externalUrl ?? dialog.querySelector(".external-view a.external-link")?.href ?? null;
     if (uniqueID !== null && uniqueID.includes("youtube.com")) {
       const videoID = new URL(uniqueID).searchParams.get("v");
       uniqueID = videoID ? `https://youtu.be/${videoID}` : uniqueID;
