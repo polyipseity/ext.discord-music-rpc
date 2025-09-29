@@ -21,7 +21,7 @@
 | -------------------- | ------------------------------------------------- |
 | Windows              | `%LOCALAPPDATA%\discord-music-rpc`                |
 | macOS                | `~/Library/Application Support/discord-music-rpc` |
-| Linux                | `~/.local/share/discord-music-rpc`                |
+| Linux                | `~/.config/discord-music-rpc`                     |
 
 - Enable services:
   - Last.fm - create an API account at <https://www.last.fm/api/account/create> and copy your API key and fill out your username in `config.yaml`
