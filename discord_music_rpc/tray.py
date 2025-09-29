@@ -5,7 +5,7 @@ import sys
 from PIL import Image
 from pystray import Icon, Menu, MenuItem
 
-from . import LOG_DIR, killer
+from . import killer
 from .sources import TrackWithSource
 
 
@@ -14,22 +14,10 @@ def on_quit(icon, item):
     icon.stop()
 
 
-def open_logs(icon, item):
-    log_file = os.path.join(LOG_DIR, "app.log")
-
-    if os.path.exists(log_file):
-        if sys.platform.startswith("darwin"):  # macOS
-            subprocess.call(("open", log_file))
-        elif sys.platform.startswith("win"):  # Windows
-            os.startfile(log_file)
-        elif sys.platform.startswith("linux"):  # Linux
-            subprocess.call(("xdg-open", log_file))
-
 
 def update_tray(icon, track: TrackWithSource | None):
     menu_items = [
         MenuItem("Discord Music RPC", lambda icon, item: None, enabled=False),
-        MenuItem("View Logs", open_logs),
         MenuItem("Quit", on_quit),
     ]
 
@@ -53,7 +41,6 @@ def run_tray_icon() -> Icon:
 
     menu = Menu(
         MenuItem("Discord Music RPC", lambda icon, item: None, enabled=False),
-        MenuItem("View Logs", open_logs),
         MenuItem("Quit", on_quit),
     )
 

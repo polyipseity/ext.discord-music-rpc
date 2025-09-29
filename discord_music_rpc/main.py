@@ -83,7 +83,8 @@ class MusicTracker:
                 logger.error(f"Unexpected error in main loop: {e}")
                 time.sleep(5)
 
-        self.icon.stop()
+        if self.icon:
+            self.icon.stop()
 
 
 def get_config(current_config=None):

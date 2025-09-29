@@ -9,21 +9,6 @@ from rich.logging import RichHandler
 PROJECT_URL = "https://github.com/f0e/discord-music-rpc"
 APP_NAME = "discord-music-rpc"
 
-
-def get_log_directory():
-    if sys.platform == "win32":
-        log_dir = os.path.join(
-            os.getenv("LOCALAPPDATA", "~/AppData/Local"), APP_NAME, "Logs"
-        )
-    elif sys.platform == "darwin":
-        log_dir = os.path.join(os.path.expanduser("~/Library/Logs"), APP_NAME)
-    else:
-        log_dir = os.path.join(os.path.expanduser("~/.local/share"), APP_NAME, "logs")
-
-    os.makedirs(log_dir, exist_ok=True)
-    return Path(log_dir).expanduser()
-
-
 def get_config_dir():
     if sys.platform.startswith("win"):
         data_path = os.path.join(os.getenv("LOCALAPPDATA", "~/AppData/Local"), APP_NAME)
@@ -32,7 +17,7 @@ def get_config_dir():
             os.path.expanduser("~/Library/Application Support"), APP_NAME
         )
     else:
-        data_path = os.path.join(os.path.expanduser("~/.local/share"), APP_NAME)
+        data_path = os.path.join(os.path.expanduser("~/.config"), APP_NAME)
 
     if data_path is None:
         exit()
@@ -41,9 +26,6 @@ def get_config_dir():
     return Path(data_path).expanduser()
 
 
-LOG_DIR = get_log_directory()
-os.makedirs(LOG_DIR, exist_ok=True)
-
 FORMAT = "%(message)s"
 
 logging.basicConfig(
@@ -51,7 +33,6 @@ logging.basicConfig(
     format=FORMAT,
     datefmt="[%X]",
     handlers=[
-        logging.FileHandler(os.path.join(LOG_DIR, "app.log")),
         RichHandler(rich_tracebacks=True),
     ],
 )
