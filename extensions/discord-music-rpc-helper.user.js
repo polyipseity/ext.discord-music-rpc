@@ -180,7 +180,8 @@ class AmpcastConnector extends MusicPlatformConnector {
     let coverArt = dialog.querySelector("img.cover-art-image")?.src ?? null;
     if (coverArt !== null) {
       const url = new URL(coverArt);
-      if (url.hostname.startsWith("192.168.0.")) {
+      if (["[::1]", "localhost"].includes(url.hostname) ||
+        ["127.0.0.", "192.168.0."].some(prefix => url.hostname.startsWith(prefix))) {
         coverArt = details.release_mbid === void 0 ? null : `https://coverartarchive.org/release/${details.release_mbid}/front`;
       } else if (url.hostname.endsWith("ytimg.com")) {
         const pathComps = url.pathname.split("/");
