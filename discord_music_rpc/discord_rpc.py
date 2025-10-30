@@ -62,8 +62,8 @@ class DiscordRichPresence:
 
             buttons = []
 
-            start_time = None
-            end_time = None
+            start_time_ms = None
+            end_time_ms = None
 
             if self.config.discord.show_urls and track.track.url:
                 buttons.append(
@@ -94,11 +94,10 @@ class DiscordRichPresence:
                 ):  # haven't gotten any progress, don't update - discord will handle it
                     continue
 
-                start_time = (
+                start_time_ms = (
                     int(datetime.datetime.now().timestamp() * 1000)
-                    - track.track.progress_ms
-                )
-                end_time = start_time + track.track.duration_ms
+                ) - track.track.progress_ms
+                end_time_ms = start_time_ms + track.track.duration_ms
                 rpc.last_progress = track.track.progress_ms
 
             status_type = StatusDisplayType.NAME
@@ -127,8 +126,12 @@ class DiscordRichPresence:
                 )  # "large_text" length must be at least 2 characters long
                 if track.track.album
                 else None,
-                start=start_time if self.config.discord.show_progress else None,
-                end=end_time if self.config.discord.show_progress else None,
+                start=start_time_ms
+                if start_time_ms and self.config.discord.show_progress
+                else None,
+                end=end_time_ms
+                if end_time_ms and self.config.discord.show_progress
+                else None,
                 small_image=track.source_image
                 if self.config.discord.show_source_logo
                 else None,

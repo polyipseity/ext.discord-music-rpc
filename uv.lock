@@ -125,7 +125,7 @@ requires-dist = [
     { name = "pillow", specifier = ">=11.0.0" },
     { name = "plexapi", specifier = ">=4.16.0" },
     { name = "pydantic", specifier = ">=2.10.3" },
-    { name = "pypresence", specifier = ">=4.3.0" },
+    { name = "pypresence", git = "https://github.com/f0e/pypresence.git?rev=66f43b724c8b9df9a34c96c90cee113b23d5a301" },
     { name = "pystray", specifier = ">=0.19.5" },
     { name = "pyyaml", specifier = ">=6.0.2" },
     { name = "requests", specifier = ">=2.32.3" },
@@ -503,12 +503,8 @@ wheels = [
 
 [[package]]
 name = "pypresence"
-version = "4.6.1"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/f6/6b/dedacb949ee73c3fd4a11992a4e9a70fc4cd1046ed6870f9138348293ded/pypresence-4.6.1.tar.gz", hash = "sha256:05199516a3b4e182b637b3cd5415aab7ba542707664f634f35a7220c4f10334f", size = 20419, upload-time = "2025-10-17T18:53:39.484Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/bd/0d/1c817c6769ce0b64cc0dcc20bc9d0edb4dc560e83a3b5f0d5cbda04c3d35/pypresence-4.6.1-py3-none-any.whl", hash = "sha256:33d4549fcdf4102f81935df4ba587bacb22193e0c50c541d1ab9329b21df33cd", size = 14033, upload-time = "2025-10-17T18:53:38.184Z" },
-]
+version = "4.7.0a2"
+source = { git = "https://github.com/f0e/pypresence.git?rev=66f43b724c8b9df9a34c96c90cee113b23d5a301#66f43b724c8b9df9a34c96c90cee113b23d5a301" }
 
 [[package]]
 name = "pystray"
