@@ -120,8 +120,12 @@ class Config(BaseModel):
 def load_config():
     config = Config.load()
 
-    # config might be missing or have extra variables, save after validating
-    # todo: i know if you just created a config for the first time this will save pointlessly but idc
-    config.save()
+    try:
+        # config might be missing or have extra variables, save after validating
+        # todo: i know if you just created a config for the first time this will save pointlessly but idc
+        config.save()
+    except:
+        logger.info("Failed to save config")
+        pass
 
     return config

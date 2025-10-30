@@ -17,11 +17,10 @@
 
 - Run the script once, a config file `config.yaml` will be generated:
 
-| **Operating System** | **Config Directory Path**                         |
-| -------------------- | ------------------------------------------------- |
-| Windows              | `%LOCALAPPDATA%\discord-music-rpc`                |
-| macOS                | `~/Library/Application Support/discord-music-rpc` |
-| Linux                | `~/.config/discord-music-rpc`                     |
+| **Operating System** | **Config Directory Path**          |
+| -------------------- | ---------------------------------- |
+| Windows              | `%LOCALAPPDATA%\discord-music-rpc` |
+| Everything else      | `~/.config/discord-music-rpc`      |
 
 - Enable services:
   - Last.fm - create an API account at <https://www.last.fm/api/account/create> and copy your API key and fill out your username in `config.yaml`

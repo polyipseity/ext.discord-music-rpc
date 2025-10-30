@@ -9,17 +9,17 @@ from rich.logging import RichHandler
 PROJECT_URL = "https://github.com/f0e/discord-music-rpc"
 APP_NAME = "discord-music-rpc"
 
+
 def get_config_dir():
     if sys.platform.startswith("win"):
         data_path = os.path.join(os.getenv("LOCALAPPDATA", "~/AppData/Local"), APP_NAME)
-    elif sys.platform.startswith("darwin"):
-        data_path = os.path.join(
-            os.path.expanduser("~/Library/Application Support"), APP_NAME
-        )
     else:
-        data_path = os.path.join(os.path.expanduser("~/.config"), APP_NAME)
+        # Use XDG_CONFIG_HOME if set, otherwise default to ~/.config
+        xdg_config_home = os.getenv("XDG_CONFIG_HOME", os.path.expanduser("~/.config"))
+        data_path = os.path.join(xdg_config_home, APP_NAME)
 
     if data_path is None:
+        print("data path couldn't be set. What")
         exit()
 
     os.makedirs(data_path, exist_ok=True)
