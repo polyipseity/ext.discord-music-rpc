@@ -2,7 +2,7 @@ import datetime
 import logging
 from dataclasses import dataclass
 
-from pypresence import ActivityType, Presence
+from pypresence import ActivityType, Presence, StatusDisplayType
 
 from . import APP_NAME, PROJECT_URL
 from .config import Config
@@ -101,10 +101,19 @@ class DiscordRichPresence:
                 end_time = start_time + track.track.duration_ms
                 rpc.last_progress = track.track.progress_ms
 
+            status_type = StatusDisplayType.NAME
+            match self.config.discord.status_type:
+                case "artist":
+                    status_type = StatusDisplayType.STATE
+
+                case "song":
+                    status_type = StatusDisplayType.DETAILS
+
             rpc.presence.update(
                 activity_type=ActivityType.LISTENING
                 if source not in activity_type_overrides
                 else activity_type_overrides[source],
+                status_display_type=status_type,
                 buttons=buttons,
                 details=track.track.name.ljust(
                     2

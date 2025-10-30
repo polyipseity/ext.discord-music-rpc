@@ -12,6 +12,7 @@ CFG_PATH = CONFIG_DIR / "config.yaml"
 
 
 class DiscordConfig(BaseModel):
+    status_type: str = "artist"
     show_progress: bool = True
     show_source_logo: bool = True
     show_urls: bool = True

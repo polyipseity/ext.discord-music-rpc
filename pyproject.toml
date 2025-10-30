@@ -8,7 +8,7 @@ dependencies = [
     "pillow>=11.0.0",
     "plexapi>=4.16.0",
     "pydantic>=2.10.3",
-    "pypresence @ git+https://github.com/qwertyquerty/pypresence.git@f856ccaaeb2321f64f9692b75dc3ceda5c927f42",
+    "pypresence>=4.3.0",
     "pystray>=0.19.5",
     "pyyaml>=6.0.2",
     "requests>=2.32.3",
@@ -30,6 +30,11 @@ dev-dependencies = [
     "mypy>=1.13.0",
     "pre-commit>=4.0.1",
     "ruff>=0.8.2",
+]
+
+[tool.uv.workspace]
+members = [
+    "test",
 ]
 
 [tool.ruff]
