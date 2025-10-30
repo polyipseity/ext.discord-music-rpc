@@ -1,6 +1,4 @@
 import os
-import subprocess
-import sys
 
 from PIL import Image
 from pystray import Icon, Menu, MenuItem
@@ -12,7 +10,6 @@ from .sources import TrackWithSource
 def on_quit(icon, item):
     killer.exit_gracefully()
     icon.stop()
-
 
 
 def update_tray(icon, track: TrackWithSource | None):
