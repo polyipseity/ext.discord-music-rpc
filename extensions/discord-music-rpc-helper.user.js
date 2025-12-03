@@ -124,12 +124,18 @@ class AmpcastConnector extends MusicPlatformConnector {
     return typeof ret === "number" ? null : ret;
   }
 
+  static isLocalhost(url) {
+    return ["[::1]", "localhost"].includes(url.hostname) ||
+      ["127.0.0.", "192.168.0."].some(prefix => url.hostname.startsWith(prefix));
+  }
+
   static NULL_MEDIA_INFO = {
     title: null,
     artist: null,
     uniqueID: null,
     coverArt: null,
   };
+
   static async getMediaInfo() {
     const infoButton = document.querySelector(".icon-button-info");
     if (infoButton === null) return this.NULL_MEDIA_INFO;
@@ -180,8 +186,7 @@ class AmpcastConnector extends MusicPlatformConnector {
     let coverArt = dialog.querySelector("img.cover-art-image")?.src ?? null;
     if (coverArt !== null) {
       const url = new URL(coverArt);
-      if (["[::1]", "localhost"].includes(url.hostname) ||
-        ["127.0.0.", "192.168.0."].some(prefix => url.hostname.startsWith(prefix))) {
+      if (this.isLocalhost(url)) {
         coverArt = details.release_mbid === void 0 ? null : `https://coverartarchive.org/release/${details.release_mbid}/front`;
       } else if (url.hostname.endsWith("ytimg.com")) {
         const pathComps = url.pathname.split("/");
@@ -198,6 +203,12 @@ class AmpcastConnector extends MusicPlatformConnector {
       if (externalLinkEl.href) {
         const url = new URL(externalLinkEl.href);
         if (url.hostname.endsWith("musicbrainz.org")) {
+          if (uniqueID === null || this.isLocalhost(new URL(uniqueID))) {
+            const uniqueIDURL = new URL(url);
+            uniqueIDURL.hostname = `${uniqueIDURL.hostname.substring(0, uniqueIDURL.hostname.length - "musicbrainz.org".length)}listenbrainz.org`;
+            uniqueID = uniqueIDURL.toString();
+          }
+
           url.pathname = `/ws/2${url.pathname}`;
           url.searchParams.set("fmt", "json");
           url.searchParams.set("inc", "artists");
