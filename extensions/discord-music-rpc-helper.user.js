@@ -97,8 +97,8 @@ class MusicPlatformConnector {
 class AmpcastConnector extends MusicPlatformConnector {
   constructor() {
     super();
-    // Pretend to be YouTube for now...
-    this.source = "YouTube"; // "Ampcast";
+    // Pretend to be Plex for now...
+    this.source = "Plex"; // "Ampcast";
     this.sourceImage = PLATFORM_LOGOS.Ampcast;
   }
 
