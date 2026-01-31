@@ -13,7 +13,7 @@ dacite==1.9.2
     # via soundcloud-v2
 distlib==0.4.0
     # via virtualenv
-filelock==3.20.0
+filelock==3.20.3
     # via virtualenv
 identify==2.6.15
     # via pre-commit
@@ -83,7 +83,7 @@ six==1.17.0
     #   python-xlib
 soundcloud-v2==1.6.0
     # via discord-music-rpc
-spotipy==2.25.1
+spotipy==2.25.2
     # via discord-music-rpc
 typing-extensions==4.15.0
     # via
@@ -93,11 +93,11 @@ typing-extensions==4.15.0
     #   typing-inspection
 typing-inspection==0.4.2
     # via pydantic
-urllib3==2.5.0
+urllib3==2.6.3
     # via
     #   requests
     #   spotipy
-virtualenv==20.35.4
+virtualenv==20.36.1
     # via pre-commit
 websockets==15.0.1
     # via discord-music-rpc
